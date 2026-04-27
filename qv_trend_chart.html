@@ -15,18 +15,70 @@
   .chart { width: 100%; }
   .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
   @media (max-width: 900px) { .grid { grid-template-columns: 1fr; } }
+  /* 进度卡片 */
+  .progress-row { display: flex; gap: 16px; margin-bottom: 24px; flex-wrap: wrap; }
+  .prog-card { background: #1a1d27; border-radius: 12px; padding: 16px 20px; flex: 1; min-width: 140px; }
+  .prog-card .label { font-size: 12px; color: #666; margin-bottom: 6px; }
+  .prog-card .value { font-size: 22px; font-weight: 700; color: #fff; }
+  .prog-card .value.green  { color: #61d9aa; }
+  .prog-card .value.yellow { color: #f6bd16; }
+  .prog-card .value.red    { color: #e86452; }
+  .prog-card .value.blue   { color: #5b8ff9; }
+  .prog-bar-wrap { background: #1a1d27; border-radius: 12px; padding: 16px 20px 20px; margin-bottom: 24px; }
+  .prog-bar-label { font-size: 13px; color: #888; margin-bottom: 10px; display: flex; justify-content: space-between; }
+  .prog-bar-bg { background: #2a2d3a; border-radius: 6px; height: 12px; overflow: hidden; }
+  .prog-bar-fill { height: 100%; border-radius: 6px; background: linear-gradient(90deg, #5b8ff9, #61d9aa); transition: width 0.6s; }
 </style>
 </head>
 <body>
 
 <h1>🔍 问小团战役 搜索QV趋势</h1>
 <p class="subtitle">数据来源：柱状图 = 看板2737（搜索专项效果报表，日维度官方口径）· 折线图 = 看板2738（分时实时累计）</p>
-<p class="subtitle2">仅外投带来，非小团大盘数据 · 4月20日–4月26日 · 更新于 2026-04-27 15:22</p>
+<p class="subtitle2">仅外投带来，非小团大盘数据 · 4月20日–4月26日 · 更新于 2026-04-27 16:18</p>
+
+<!-- 进度卡片 -->
+<div class="progress-row">
+  <div class="prog-card">
+    <div class="label">QV 总目标</div>
+    <div class="value blue">1,700w</div>
+  </div>
+  <div class="prog-card">
+    <div class="label">已完成 QV</div>
+    <div class="value green">8,355,368</div>
+  </div>
+  <div class="prog-card">
+    <div class="label">目标完成率</div>
+    <div class="value red">49.1%</div>
+  </div>
+  <div class="prog-card">
+    <div class="label">剩余 QV 缺口</div>
+    <div class="value yellow">8,644,632</div>
+  </div>
+  <div class="prog-card">
+    <div class="label">剩余投流预算</div>
+    <div class="value">5,494,754</div>
+  </div>
+  <div class="prog-card">
+    <div class="label">后续成本控制目标</div>
+    <div class="value yellow">0.64 元/QV</div>
+  </div>
+</div>
+
+<!-- 进度条 -->
+<div class="prog-bar-wrap">
+  <div class="prog-bar-label">
+    <span>QV 目标进度</span>
+    <span>8,355,368 / 17,000,000（49.1%）</span>
+  </div>
+  <div class="prog-bar-bg">
+    <div class="prog-bar-fill" style="width:49.1%"></div>
+  </div>
+</div>
 
 <!-- 每日全天QV总量对比 -->
 <div class="chart-wrap">
-  <div class="chart-title">📊 每日全天累计QV对比（看板2737 · 搜索专项效果报表口径）</div>
-  <div id="dailyBar" class="chart" style="height:280px"></div>
+  <div class="chart-title">📊 每日全天累计QV对比 + 战役累计进度（看板2737 · 搜索专项效果报表口径）</div>
+  <div id="dailyBar" class="chart" style="height:320px"></div>
 </div>
 
 <!-- 分时趋势折线图 -->
@@ -134,18 +186,70 @@ function toSorted(obj) {
   return entries;
 }
 
-// ── 1. 每日柱状图（看板2737官方口径）────────────────────
+// ── 1. 每日柱状图（看板2737官方口径）+ 累计进度折线 ─────
+const QV_TARGET   = 17000000;
+const cumulative  = [268530, 772027, 1324611, 2873152, 6066499, 7179606, 8355368];
+
 const barChart = echarts.init(document.getElementById('dailyBar'));
 barChart.setOption({
-  tooltip: { trigger: 'axis', formatter: p => `${p[0].name}<br/>搜索QV（2737）：<b>${p[0].value.toLocaleString()}</b>` },
-  grid: { left: 60, right: 20, top: 20, bottom: 30 },
+  tooltip: {
+    trigger: 'axis',
+    formatter: params => {
+      let s = `<b>${params[0].axisValue}</b><br/>`;
+      params.forEach(p => {
+        if (p.seriesName === '当日QV')
+          s += `${p.marker}当日QV：<b>${(p.value||0).toLocaleString()}</b><br/>`;
+        else if (p.seriesName === '战役累计QV')
+          s += `${p.marker}战役累计：<b>${(p.value||0).toLocaleString()}</b>（目标进度 ${(p.value/QV_TARGET*100).toFixed(1)}%）<br/>`;
+      });
+      return s;
+    }
+  },
+  legend: { data: ['当日QV','战役累计QV'], textStyle: { color: '#aaa' }, top: 4, right: 12 },
+  grid: { left: 70, right: 80, top: 36, bottom: 30 },
   xAxis: { type: 'category', data: barDays, axisLabel: { color: '#aaa' }, axisLine: { lineStyle: { color: '#333' } } },
-  yAxis: { type: 'value', axisLabel: { color: '#aaa', formatter: v => fmtNum(v) }, splitLine: { lineStyle: { color: '#222' } } },
-  series: [{
-    type: 'bar',
-    data: barMax.map((v, i) => ({ value: v, itemStyle: { color: barColors[i], borderRadius: [4,4,0,0] } })),
-    label: { show: true, position: 'top', color: '#ccc', formatter: p => fmtNum(p.value) }
-  }]
+  yAxis: [
+    {
+      type: 'value', name: '当日QV',
+      nameTextStyle: { color: '#666', fontSize: 11 },
+      axisLabel: { color: '#aaa', formatter: v => fmtNum(v) },
+      splitLine: { lineStyle: { color: '#222' } }
+    },
+    {
+      type: 'value', name: '累计QV',
+      nameTextStyle: { color: '#666', fontSize: 11 },
+      axisLabel: { color: '#aaa', formatter: v => fmtNum(v) },
+      splitLine: { show: false },
+      max: QV_TARGET * 1.05
+    }
+  ],
+  series: [
+    {
+      name: '当日QV',
+      type: 'bar',
+      yAxisIndex: 0,
+      data: barMax.map((v, i) => ({ value: v, itemStyle: { color: barColors[i], borderRadius: [4,4,0,0] } })),
+      label: { show: true, position: 'top', color: '#ccc', fontSize: 11, formatter: p => fmtNum(p.value) }
+    },
+    {
+      name: '战役累计QV',
+      type: 'line',
+      yAxisIndex: 1,
+      data: cumulative,
+      smooth: false,
+      symbol: 'circle', symbolSize: 7,
+      lineStyle: { color: '#f6bd16', width: 2.5 },
+      itemStyle: { color: '#f6bd16' },
+      label: { show: true, position: 'top', color: '#f6bd16', fontSize: 11, formatter: p => fmtNum(p.value) },
+      markLine: {
+        silent: true,
+        symbol: ['none','none'],
+        lineStyle: { color: '#e86452', type: 'dashed', width: 1.5 },
+        label: { color: '#e86452', fontSize: 11, formatter: '目标 1700w' },
+        data: [{ yAxis: QV_TARGET }]
+      }
+    }
+  ]
 });
 
 // ── 2. 分时叠加折线图 ─────────────────────────────────────
