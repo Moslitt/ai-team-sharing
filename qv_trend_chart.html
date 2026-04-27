@@ -34,7 +34,7 @@
 
 <h1>🔍 问小团战役 搜索QV趋势</h1>
 <p class="subtitle">数据来源：柱状图 = 看板2737（搜索专项效果报表，日维度官方口径）· 折线图 = 看板2738（分时实时累计）</p>
-<p class="subtitle2">仅外投带来，非小团大盘数据 · 4月20日–4月26日 · 更新于 2026-04-27 16:18</p>
+<p class="subtitle2">仅外投带来，非小团大盘数据 · 4月20日–4月26日 · 更新于 2026-04-27 16:21</p>
 
 <!-- 进度卡片 -->
 <div class="progress-row">
@@ -220,7 +220,8 @@ barChart.setOption({
       nameTextStyle: { color: '#666', fontSize: 11 },
       axisLabel: { color: '#aaa', formatter: v => fmtNum(v) },
       splitLine: { show: false },
-      max: QV_TARGET * 1.05
+      max: QV_TARGET,
+      min: 0
     }
   ],
   series: [
@@ -245,7 +246,13 @@ barChart.setOption({
         silent: true,
         symbol: ['none','none'],
         lineStyle: { color: '#e86452', type: 'dashed', width: 1.5 },
-        label: { color: '#e86452', fontSize: 11, formatter: '目标 1700w' },
+        label: {
+          position: 'insideEndTop',
+          color: '#e86452',
+          fontSize: 12,
+          fontWeight: 'bold',
+          formatter: '🎯 目标 1700w'
+        },
         data: [{ yAxis: QV_TARGET }]
       }
     }
