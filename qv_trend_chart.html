@@ -19,7 +19,7 @@
 <body>
 
 <h1>🔍 问小团战役 搜索QV趋势</h1>
-<p class="subtitle">数据来源：纵横看板2738 · 仅外投带来，非小团大盘数据 · 4月20日–4月26日</p>
+<p class="subtitle">数据来源：纵横看板2738 · 仅外投带来，非小团大盘数据 · 4月20日–4月27日 · 更新于 2026-04-27 14:46</p>
 
 <!-- 每日全天QV总量对比 -->
 <div class="chart-wrap">
@@ -33,99 +33,95 @@
   <div id="hourlyLine" class="chart" style="height:360px"></div>
 </div>
 
-<!-- 每日分时图 6宫格 -->
+<!-- 每日分时图宫格 -->
 <div class="grid">
+
   <div class="chart-wrap">
     <div class="chart-title">4月21日 分时累计QV</div>
-    <div id="d21" class="chart" style="height:220px"></div>
+    <div id="d421" class="chart" style="height:220px"></div>
   </div>
   <div class="chart-wrap">
     <div class="chart-title">4月22日 分时累计QV</div>
-    <div id="d22" class="chart" style="height:220px"></div>
+    <div id="d422" class="chart" style="height:220px"></div>
   </div>
   <div class="chart-wrap">
     <div class="chart-title">4月23日 分时累计QV</div>
-    <div id="d23" class="chart" style="height:220px"></div>
+    <div id="d423" class="chart" style="height:220px"></div>
   </div>
   <div class="chart-wrap">
     <div class="chart-title">4月24日 分时累计QV</div>
-    <div id="d24" class="chart" style="height:220px"></div>
+    <div id="d424" class="chart" style="height:220px"></div>
   </div>
   <div class="chart-wrap">
     <div class="chart-title">4月25日 分时累计QV</div>
-    <div id="d25" class="chart" style="height:220px"></div>
+    <div id="d425" class="chart" style="height:220px"></div>
   </div>
   <div class="chart-wrap">
     <div class="chart-title">4月26日 分时累计QV</div>
-    <div id="d26" class="chart" style="height:220px"></div>
+    <div id="d426" class="chart" style="height:220px"></div>
+  </div>
+  <div class="chart-wrap">
+    <div class="chart-title">4月27日 分时累计QV</div>
+    <div id="d427" class="chart" style="height:220px"></div>
   </div>
 </div>
 
-<!-- 每日分时增速 6宫格 -->
+<!-- 每日分时增速 -->
 <div class="chart-wrap" style="margin-top:0">
   <div class="chart-title">⚡ 每日分时新增QV & 环比增速（各日叠加对比）</div>
   <div id="speedLine" class="chart" style="height:360px"></div>
 </div>
 <div class="grid">
+
   <div class="chart-wrap">
     <div class="chart-title">4月21日 分时新增QV</div>
-    <div id="s21" class="chart" style="height:220px"></div>
+    <div id="s421" class="chart" style="height:220px"></div>
   </div>
   <div class="chart-wrap">
     <div class="chart-title">4月22日 分时新增QV</div>
-    <div id="s22" class="chart" style="height:220px"></div>
+    <div id="s422" class="chart" style="height:220px"></div>
   </div>
   <div class="chart-wrap">
     <div class="chart-title">4月23日 分时新增QV</div>
-    <div id="s23" class="chart" style="height:220px"></div>
+    <div id="s423" class="chart" style="height:220px"></div>
   </div>
   <div class="chart-wrap">
     <div class="chart-title">4月24日 分时新增QV</div>
-    <div id="s24" class="chart" style="height:220px"></div>
+    <div id="s424" class="chart" style="height:220px"></div>
   </div>
   <div class="chart-wrap">
     <div class="chart-title">4月25日 分时新增QV</div>
-    <div id="s25" class="chart" style="height:220px"></div>
+    <div id="s425" class="chart" style="height:220px"></div>
   </div>
   <div class="chart-wrap">
     <div class="chart-title">4月26日 分时新增QV</div>
-    <div id="s26" class="chart" style="height:220px"></div>
+    <div id="s426" class="chart" style="height:220px"></div>
+  </div>
+  <div class="chart-wrap">
+    <div class="chart-title">4月27日 分时新增QV</div>
+    <div id="s427" class="chart" style="height:220px"></div>
   </div>
 </div>
 
 <script>
 // ── 原始数据 ──────────────────────────────────────────────
-const raw = {
-  '4/21': { 18:176598, 19:178544, 20:202435, 21:267506, 22:387135, 23:458420 },
-  '4/22': { 9:26206, 10:28715, 11:31130, 12:164484, 15:261424 },
-  '4/23': { 9:176557, 10:229275, 11:255115, 12:453748, 13:719002, 14:831874, 15:915889, 16:994244, 17:994244, 18:1245212, 19:1299495, 20:1314528, 21:1334695, 22:1423538, 23:1449423, 0:1506143 },
-  '4/24': { 9:2460027, 10:2700730, 11:2719421, 12:2734116, 13:2746573, 14:2756758, 15:2771161, 17:2941290, 18:3026223, 19:3085861, 20:3100448, 21:3106628, 22:3115709, 23:3124670, 0:3133102 },
-  '4/25': { 9:47040, 10:107675, 11:224420, 12:386480, 13:540182, 14:741084, 15:780802, 16:795192, 17:809208, 18:821905, 19:838964, 20:891147, 21:966792, 22:981427, 0:1093114 },
-  '4/26': { 9:40139, 10:113636, 11:167068, 12:268658, 13:346035, 14:378761, 15:399813, 16:412233, 17:437556, 18:727064, 19:875216, 20:937196, 21:1001083, 22:1116085, 23:1125243, 0:1130653 }
-};
+const raw = {"4/21": {"18": 176598, "19": 178544, "20": 202435, "21": 267506, "22": 387135, "23": 458420}, "4/22": {"9": 26206, "10": 28715, "11": 31130, "12": 164484, "15": 261424}, "4/23": {"9": 176557, "10": 229275, "11": 255115, "12": 453748, "13": 719002, "14": 831874, "15": 915889, "16": 994244, "17": 994244, "18": 1245212, "19": 1299495, "20": 1314528, "21": 1334695, "22": 1423538, "23": 1449423, "0": 1506143}, "4/24": {"9": 2460027, "10": 2700730, "11": 2719421, "12": 2734116, "13": 2746573, "14": 2756758, "15": 2771161, "17": 2941290, "18": 3026223, "19": 3085861, "20": 3100448, "21": 3106628, "22": 3115709, "23": 3124670, "0": 3133102}, "4/25": {"9": 47040, "10": 107675, "11": 224420, "12": 386480, "13": 540182, "14": 741084, "15": 780802, "16": 795192, "17": 809208, "18": 821905, "19": 838964, "20": 891147, "21": 966792, "22": 981427, "0": 1093114}, "4/26": {"9": 40139, "10": 113636, "11": 167068, "12": 268658, "13": 346035, "14": 378761, "15": 399813, "16": 412233, "17": 437556, "18": 727064, "19": 875216, "20": 937196, "21": 1001083, "22": 1116085, "23": 1125243, "0": 1130653}, "4/27": {"9": 24313, "10": 87352, "11": 126966, "12": 165977, "13": 230105, "14": 316044}};
 
-// 柱状图：含4/20全天累计（从看板拉取），分时折线图不含4/20
-const barDays  = ['4/20', '4/21', '4/22', '4/23', '4/24', '4/25', '4/26'];
-const barMax   = [268530, 458420, 261424, 1506143, 3133102, 1093114, 1130653];
-const barColors = ['#8ecdf7','#5b8ff9','#61d9aa','#f6bd16','#e86452','#a371f7','#ff9d4d'];
-
-const days = Object.keys(raw);
-const colors = ['#5b8ff9','#61d9aa','#f6bd16','#e86452','#a371f7','#ff9d4d'];
+const barDays   = ["4/20", "4/21", "4/22", "4/23", "4/24", "4/25", "4/26", "4/27"];
+const barMax    = [268530, 458420, 261424, 1506143, 3133102, 1093114, 1130653, 316044];
+const barColors = ["#8ecdf7", "#5b8ff9", "#61d9aa", "#f6bd16", "#e86452", "#a371f7", "#ff9d4d", "#36cfc9"];
+const lineDays  = ["4/21", "4/22", "4/23", "4/24", "4/25", "4/26", "4/27"];
+const lineColors = ["#5b8ff9", "#61d9aa", "#f6bd16", "#e86452", "#a371f7", "#ff9d4d", "#36cfc9"];
 
 // ── 工具函数 ──────────────────────────────────────────────
 function fmtNum(v) {
   if (v >= 10000) return (v / 10000).toFixed(1) + 'w';
   return v.toLocaleString();
 }
+function hourLabel(h) { return String(h).padStart(2,'0') + ':00'; }
 
-function hourLabel(h) {
-  return String(h).padStart(2,'0') + ':00';
-}
-
-// 将原始对象转为有序 [hour, qv] 数组，0点排到末尾
 function toSorted(obj) {
   const entries = Object.entries(obj).map(([h, v]) => [parseInt(h), v]);
-  // 0点排末尾
   entries.sort((a, b) => {
     const ah = a[0] === 0 ? 24 : a[0];
     const bh = b[0] === 0 ? 24 : b[0];
@@ -137,10 +133,7 @@ function toSorted(obj) {
 // ── 1. 每日柱状图 ─────────────────────────────────────────
 const barChart = echarts.init(document.getElementById('dailyBar'));
 barChart.setOption({
-  tooltip: {
-    trigger: 'axis',
-    formatter: p => `${p[0].name}<br/>累计QV：<b>${p[0].value.toLocaleString()}</b>`
-  },
+  tooltip: { trigger: 'axis', formatter: p => `${p[0].name}<br/>累计QV：<b>${p[0].value.toLocaleString()}</b>` },
   grid: { left: 60, right: 20, top: 20, bottom: 30 },
   xAxis: { type: 'category', data: barDays, axisLabel: { color: '#aaa' }, axisLine: { lineStyle: { color: '#333' } } },
   yAxis: { type: 'value', axisLabel: { color: '#aaa', formatter: v => fmtNum(v) }, splitLine: { lineStyle: { color: '#222' } } },
@@ -152,9 +145,8 @@ barChart.setOption({
 });
 
 // ── 2. 分时叠加折线图 ─────────────────────────────────────
-// 统一X轴：9~23 + 0
 const allHours = [9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,0];
-const xLabels = allHours.map(h => h === 0 ? '00:00' : hourLabel(h));
+const xLabels  = allHours.map(h => h === 0 ? '00:00' : hourLabel(h));
 
 const lineChart = echarts.init(document.getElementById('hourlyLine'));
 lineChart.setOption({
@@ -162,29 +154,22 @@ lineChart.setOption({
     trigger: 'axis',
     formatter: params => {
       let s = `<b>${params[0].axisValue}</b><br/>`;
-      params.forEach(p => {
-        if (p.value != null)
-          s += `${p.marker}${p.seriesName}：${p.value.toLocaleString()}<br/>`;
-      });
+      params.forEach(p => { if (p.value != null) s += `${p.marker}${p.seriesName}：${p.value.toLocaleString()}<br/>`; });
       return s;
     }
   },
-  legend: { data: days, textStyle: { color: '#aaa' }, top: 0 },
+  legend: { data: lineDays, textStyle: { color: '#aaa' }, top: 0 },
   grid: { left: 70, right: 20, top: 36, bottom: 36 },
   xAxis: { type: 'category', data: xLabels, axisLabel: { color: '#aaa', rotate: 30 }, axisLine: { lineStyle: { color: '#333' } } },
   yAxis: { type: 'value', axisLabel: { color: '#aaa', formatter: v => fmtNum(v) }, splitLine: { lineStyle: { color: '#222' } } },
-  series: days.map((d, i) => {
+  series: lineDays.map((d, i) => {
     const sorted = toSorted(raw[d]);
     const hourMap = Object.fromEntries(sorted);
     return {
-      name: d,
-      type: 'line',
-      smooth: true,
-      connectNulls: false,
-      symbol: 'circle',
-      symbolSize: 5,
-      lineStyle: { color: colors[i], width: 2 },
-      itemStyle: { color: colors[i] },
+      name: d, type: 'line', smooth: true, connectNulls: false,
+      symbol: 'circle', symbolSize: 5,
+      lineStyle: { color: lineColors[i], width: 2 },
+      itemStyle: { color: lineColors[i] },
       data: allHours.map(h => hourMap[h] != null ? hourMap[h] : null)
     };
   })
@@ -193,47 +178,39 @@ lineChart.setOption({
 // ── 3. 每日单独分时图 ─────────────────────────────────────
 function renderDayChart(elId, day, color) {
   const sorted = toSorted(raw[day]);
-  const xData = sorted.map(([h]) => h === 0 ? '00:00' : hourLabel(h));
-  const yData = sorted.map(([, v]) => v);
-
-  const chart = echarts.init(document.getElementById(elId));
+  const xData  = sorted.map(([h]) => h === 0 ? '00:00' : hourLabel(h));
+  const yData  = sorted.map(([, v]) => v);
+  const chart  = echarts.init(document.getElementById(elId));
   chart.setOption({
-    tooltip: {
-      trigger: 'axis',
-      formatter: p => `${p[0].axisValue}<br/>累计QV：<b>${p[0].value.toLocaleString()}</b>`
-    },
+    tooltip: { trigger: 'axis', formatter: p => `${p[0].axisValue}<br/>累计QV：<b>${p[0].value.toLocaleString()}</b>` },
     grid: { left: 56, right: 12, top: 16, bottom: 36 },
     xAxis: { type: 'category', data: xData, axisLabel: { color: '#aaa', fontSize: 11, rotate: 30 }, axisLine: { lineStyle: { color: '#333' } } },
     yAxis: { type: 'value', axisLabel: { color: '#aaa', fontSize: 11, formatter: v => fmtNum(v) }, splitLine: { lineStyle: { color: '#222' } } },
     series: [{
-      type: 'line',
-      smooth: true,
-      symbol: 'circle',
-      symbolSize: 5,
+      type: 'line', smooth: true, symbol: 'circle', symbolSize: 5,
       data: yData,
-      lineStyle: { color, width: 2 },
-      itemStyle: { color },
+      lineStyle: { color, width: 2 }, itemStyle: { color },
       areaStyle: { color: { type: 'linear', x:0, y:0, x2:0, y2:1, colorStops: [{ offset:0, color: color+'55' }, { offset:1, color: color+'05' }] } },
       label: { show: true, position: 'top', color: '#bbb', fontSize: 10, formatter: p => fmtNum(p.value) }
     }]
   });
 }
 
-renderDayChart('d21', '4/21', colors[0]);
-renderDayChart('d22', '4/22', colors[1]);
-renderDayChart('d23', '4/23', colors[2]);
-renderDayChart('d24', '4/24', colors[3]);
-renderDayChart('d25', '4/25', colors[4]);
-renderDayChart('d26', '4/26', colors[5]);
+  renderDayChart('d421', '4/21', lineColors[0]);
+  renderDayChart('d422', '4/22', lineColors[1]);
+  renderDayChart('d423', '4/23', lineColors[2]);
+  renderDayChart('d424', '4/24', lineColors[3]);
+  renderDayChart('d425', '4/25', lineColors[4]);
+  renderDayChart('d426', '4/26', lineColors[5]);
+  renderDayChart('d427', '4/27', lineColors[6]);
 
-// ── 4. 计算分时新增QV ────────────────────────────────────
-// 对每天的有序数据，相邻两点做差得到新增量；第一个点无前值，新增=自身
+// ── 4. 分时新增计算 ───────────────────────────────────────
 function calcDelta(day) {
-  const sorted = toSorted(raw[day]); // [[hour, qv], ...]
+  const sorted = toSorted(raw[day]);
   return sorted.map(([h, qv], i) => {
     const label = h === 0 ? '00:00' : hourLabel(h);
-    const delta = i === 0 ? qv : qv - sorted[i - 1][1];
-    const base  = i === 0 ? null : sorted[i - 1][1];
+    const delta = i === 0 ? qv : qv - sorted[i-1][1];
+    const base  = i === 0 ? null : sorted[i-1][1];
     const pct   = (base && base > 0) ? +(delta / base * 100).toFixed(1) : null;
     return { label, delta, pct };
   });
@@ -246,59 +223,48 @@ speedLineChart.setOption({
     trigger: 'axis',
     formatter: params => {
       let s = `<b>${params[0].axisValue}</b><br/>`;
-      params.forEach(p => {
-        if (p.value != null)
-          s += `${p.marker}${p.seriesName}：+${p.value.toLocaleString()}<br/>`;
-      });
+      params.forEach(p => { if (p.value != null) s += `${p.marker}${p.seriesName}：+${p.value.toLocaleString()}<br/>`; });
       return s;
     }
   },
-  legend: { data: days, textStyle: { color: '#aaa' }, top: 0 },
+  legend: { data: lineDays, textStyle: { color: '#aaa' }, top: 0 },
   grid: { left: 70, right: 20, top: 36, bottom: 36 },
   xAxis: { type: 'category', data: xLabels, axisLabel: { color: '#aaa', rotate: 30 }, axisLine: { lineStyle: { color: '#333' } } },
   yAxis: { type: 'value', axisLabel: { color: '#aaa', formatter: v => fmtNum(v) }, splitLine: { lineStyle: { color: '#222' } } },
-  series: days.map((d, i) => {
+  series: lineDays.map((d, i) => {
     const deltas = calcDelta(d);
-    // 对齐到 allHours X轴
     const deltaMap = {};
     toSorted(raw[d]).forEach(([h], idx) => { deltaMap[h] = deltas[idx].delta; });
     return {
-      name: d,
-      type: 'line',
-      smooth: true,
-      connectNulls: false,
-      symbol: 'circle',
-      symbolSize: 5,
-      lineStyle: { color: colors[i], width: 2 },
-      itemStyle: { color: colors[i] },
+      name: d, type: 'line', smooth: true, connectNulls: false,
+      symbol: 'circle', symbolSize: 5,
+      lineStyle: { color: lineColors[i], width: 2 },
+      itemStyle: { color: lineColors[i] },
       data: allHours.map(h => deltaMap[h] != null ? deltaMap[h] : null)
     };
   })
 });
 
-// ── 6. 每日单独分时增速图（柱+折线双轴）────────────────────
+// ── 6. 每日单独分时增速图 ─────────────────────────────────
 function renderSpeedChart(elId, day, color) {
-  const deltas = calcDelta(day);
-  const xData  = deltas.map(d => d.label);
-  const barData = deltas.map(d => d.delta);
+  const deltas   = calcDelta(day);
+  const xData    = deltas.map(d => d.label);
+  const barData  = deltas.map(d => d.delta);
   const lineData = deltas.map(d => d.pct);
-
-  const chart = echarts.init(document.getElementById(elId));
+  const chart    = echarts.init(document.getElementById(elId));
   chart.setOption({
     tooltip: {
       trigger: 'axis',
       formatter: params => {
         let s = `<b>${params[0].axisValue}</b><br/>`;
         params.forEach(p => {
-          if (p.seriesName === '新增QV')
-            s += `${p.marker}新增QV：+${(p.value||0).toLocaleString()}<br/>`;
-          else if (p.value != null)
-            s += `${p.marker}环比增速：+${p.value}%<br/>`;
+          if (p.seriesName === '新增QV') s += `${p.marker}新增QV：+${(p.value||0).toLocaleString()}<br/>`;
+          else if (p.value != null) s += `${p.marker}环比增速：+${p.value}%<br/>`;
         });
         return s;
       }
     },
-    legend: { data: ['新增QV', '环比增速'], textStyle: { color: '#aaa', fontSize: 10 }, top: 0, right: 8 },
+    legend: { data: ['新增QV','环比增速'], textStyle: { color: '#aaa', fontSize: 10 }, top: 0, right: 8 },
     grid: { left: 56, right: 52, top: 28, bottom: 36 },
     xAxis: { type: 'category', data: xData, axisLabel: { color: '#aaa', fontSize: 10, rotate: 30 }, axisLine: { lineStyle: { color: '#333' } } },
     yAxis: [
@@ -307,21 +273,13 @@ function renderSpeedChart(elId, day, color) {
     ],
     series: [
       {
-        name: '新增QV',
-        type: 'bar',
-        yAxisIndex: 0,
-        data: barData,
+        name: '新增QV', type: 'bar', yAxisIndex: 0, data: barData,
         itemStyle: { color: color + 'bb', borderRadius: [3,3,0,0] },
         label: { show: true, position: 'top', color: '#bbb', fontSize: 9, formatter: p => fmtNum(p.value) }
       },
       {
-        name: '环比增速',
-        type: 'line',
-        yAxisIndex: 1,
-        data: lineData,
-        smooth: true,
-        symbol: 'circle',
-        symbolSize: 4,
+        name: '环比增速', type: 'line', yAxisIndex: 1, data: lineData,
+        smooth: true, symbol: 'circle', symbolSize: 4,
         lineStyle: { color: '#facc15', width: 1.5 },
         itemStyle: { color: '#facc15' },
         label: { show: true, position: 'top', color: '#facc15', fontSize: 9, formatter: p => p.value != null ? p.value + '%' : '' }
@@ -330,17 +288,18 @@ function renderSpeedChart(elId, day, color) {
   });
 }
 
-renderSpeedChart('s21', '4/21', colors[0]);
-renderSpeedChart('s22', '4/22', colors[1]);
-renderSpeedChart('s23', '4/23', colors[2]);
-renderSpeedChart('s24', '4/24', colors[3]);
-renderSpeedChart('s25', '4/25', colors[4]);
-renderSpeedChart('s26', '4/26', colors[5]);
+  renderSpeedChart('s421', '4/21', lineColors[0]);
+  renderSpeedChart('s422', '4/22', lineColors[1]);
+  renderSpeedChart('s423', '4/23', lineColors[2]);
+  renderSpeedChart('s424', '4/24', lineColors[3]);
+  renderSpeedChart('s425', '4/25', lineColors[4]);
+  renderSpeedChart('s426', '4/26', lineColors[5]);
+  renderSpeedChart('s427', '4/27', lineColors[6]);
 
 // 响应式
 window.addEventListener('resize', () => {
   [barChart, lineChart, speedLineChart].forEach(c => c.resize());
-  ['d21','d22','d23','d24','d25','d26','s21','s22','s23','s24','s25','s26']
+  ["d421", "d422", "d423", "d424", "d425", "d426", "d427"].concat(["s421", "s422", "s423", "s424", "s425", "s426", "s427"])
     .forEach(id => echarts.getInstanceByDom(document.getElementById(id))?.resize());
 });
 </script>
