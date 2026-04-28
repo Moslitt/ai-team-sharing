@@ -34,7 +34,7 @@
 
 <h1>🔍 问小团战役 搜索QV趋势</h1>
 <p class="subtitle">数据来源：柱状图 = 看板2737（搜索专项效果报表，日维度官方口径）· 折线图 = 看板2738（分时实时累计）</p>
-<p class="subtitle2">仅外投带来，非小团大盘数据 · 4月20日–4月27日 · 更新于 2026-04-28 11:17</p>
+<p class="subtitle2">仅外投带来，非小团大盘数据 · 4月20日–4月27日 · 更新于 2026-04-28 17:09</p>
 
 <!-- 进度卡片 -->
 <div class="progress-row">
@@ -202,9 +202,19 @@
   </div>
 </div>
 
+<!-- 5个新指标 by 天趋势 -->
+<div class="chart-wrap" style="margin-top:24px">
+  <div class="chart-title">📐 问小团质量指标 by 天趋势（看板2737）</div>
+  <div id="metricsLine1" class="chart" style="height:300px"></div>
+</div>
+<div class="chart-wrap">
+  <div class="chart-title">📏 小团平均搜索字符长度 by 天趋势（看板2737）</div>
+  <div id="metricsLine2" class="chart" style="height:260px"></div>
+</div>
+
 <script>
 // ── 原始数据（分时，看板2738口径）────────────────────────
-const raw = {"4/21": {"18": 176598, "19": 178544, "20": 202435, "21": 267506, "22": 387135, "23": 458420}, "4/22": {"9": 26206, "10": 28715, "11": 31130, "12": 164484, "15": 261424}, "4/23": {"9": 176557, "10": 229275, "11": 255115, "12": 453748, "13": 719002, "14": 831874, "15": 915889, "16": 994244, "17": 994244, "18": 1245212, "19": 1299495, "20": 1314528, "21": 1334695, "22": 1423538, "23": 1449423, "0": 1506143}, "4/24": {"9": 2460027, "10": 2700730, "11": 2719421, "12": 2734116, "13": 2746573, "14": 2756758, "15": 2771161, "17": 2941290, "18": 3026223, "19": 3085861, "20": 3100448, "21": 3106628, "22": 3115709, "23": 3124670, "0": 3133102}, "4/25": {"9": 47040, "10": 107675, "11": 224420, "12": 386480, "13": 540182, "14": 741084, "15": 780802, "16": 795192, "17": 809208, "18": 821905, "19": 838964, "20": 891147, "21": 966792, "22": 981427, "0": 1093114}, "4/26": {"9": 40139, "10": 113636, "11": 167068, "12": 268658, "13": 346035, "14": 378761, "15": 399813, "16": 412233, "17": 437556, "18": 727064, "19": 875216, "20": 937196, "21": 1001083, "22": 1116085, "23": 1125243, "0": 1130653}, "4/27": {"9": 24313, "10": 87352, "11": 126966, "12": 165977, "13": 230105, "14": 316044, "15": 421496, "16": 516197, "17": 585384, "18": 692685, "19": 835450, "20": 894666, "21": 904757, "22": 914301, "23": 917448}, "4/28": {"9": 48605, "10": 69368, "11": 128991}};
+const raw = {"4/21": {"18": 176598, "19": 178544, "20": 202435, "21": 267506, "22": 387135, "23": 458420}, "4/22": {"9": 26206, "10": 28715, "11": 31130, "12": 164484, "15": 261424}, "4/23": {"9": 176557, "10": 229275, "11": 255115, "12": 453748, "13": 719002, "14": 831874, "15": 915889, "16": 994244, "17": 994244, "18": 1245212, "19": 1299495, "20": 1314528, "21": 1334695, "22": 1423538, "23": 1449423, "0": 1506143}, "4/24": {"9": 2460027, "10": 2700730, "11": 2719421, "12": 2734116, "13": 2746573, "14": 2756758, "15": 2771161, "17": 2941290, "18": 3026223, "19": 3085861, "20": 3100448, "21": 3106628, "22": 3115709, "23": 3124670, "0": 3133102}, "4/25": {"9": 47040, "10": 107675, "11": 224420, "12": 386480, "13": 540182, "14": 741084, "15": 780802, "16": 795192, "17": 809208, "18": 821905, "19": 838964, "20": 891147, "21": 966792, "22": 981427, "0": 1093114}, "4/26": {"9": 40139, "10": 113636, "11": 167068, "12": 268658, "13": 346035, "14": 378761, "15": 399813, "16": 412233, "17": 437556, "18": 727064, "19": 875216, "20": 937196, "21": 1001083, "22": 1116085, "23": 1125243, "0": 1130653}, "4/27": {"9": 24313, "10": 87352, "11": 126966, "12": 165977, "13": 230105, "14": 316044, "15": 421496, "16": 516197, "17": 585384, "18": 692685, "19": 835450, "20": 894666, "21": 904757, "22": 914301, "23": 917448}, "4/28": {"9": 48605, "10": 69368, "11": 128991, "12": 341745, "13": 408631, "14": 436700, "15": 464541, "16": 508749, "17": 559095}};
 
 // ── 柱状图数据（看板2737日维度官方口径）─────────────────
 const barDays   = ["4/20", "4/21", "4/22", "4/23", "4/24", "4/25", "4/26", "4/27"];
@@ -213,6 +223,14 @@ const barColors = ["#8ecdf7", "#5b8ff9", "#61d9aa", "#f6bd16", "#e86452", "#a371
 
 const lineDays   = ["4/21", "4/22", "4/23", "4/24", "4/25", "4/26", "4/27", "4/28"];
 const lineColors = ["#5b8ff9", "#61d9aa", "#f6bd16", "#e86452", "#a371f7", "#ff9d4d", "#36cfc9", "#ff85c0"];
+
+// ── 5个新指标数据（看板2737）─────────────────────────────
+const metricsDays  = ["4/21", "4/22", "4/23", "4/24", "4/25", "4/26", "4/27"];
+const metricsDun   = [67.86, 64.37, 54.03, 48.46, 63.73, 68.16, 64.58];   // DUN占比 (%)
+const metricsMulti = [28.6, 23.2, 26.7, 27.8, 25.9, 24.5, 23.0]; // 多轮对话率 (%)
+const metricsChar  = [17.5, 14.6, 11.5, 12.5, 12.2, 11.4, 12.6];  // 小团平均搜索字符长度
+const metricsRead  = [24.0, 43.6, 50.8, 64.0, 58.1, 59.7, 58.3];  // 小团答案完读率 (%)
+const metricsD7    = [67.0, 62.3, 48.1, 15.5, 23.4, 20.3, 0.0];    // 问小团次7日留存率 (%)
 
 // ── 工具函数 ──────────────────────────────────────────────
 function fmtNum(v) {
@@ -460,9 +478,113 @@ function renderSpeedChart(elId, day, color) {
   renderSpeedChart('s427', '4/27', lineColors[6]);
   renderSpeedChart('s428', '4/28', lineColors[7]);
 
+// ── 7. 5个新指标折线图（百分比类：DUN占比/多轮对话率/完读率/7日留存率）────
+let metricsChart1 = null;
+if (metricsDays.length > 0) {
+  metricsChart1 = echarts.init(document.getElementById('metricsLine1'));
+  metricsChart1.setOption({
+    tooltip: {
+      trigger: 'axis',
+      formatter: params => {
+        let s = `<b>${params[0].axisValue}</b><br/>`;
+        params.forEach(p => {
+          if (p.value != null) s += `${p.marker}${p.seriesName}：<b>${p.value.toFixed(1)}%</b><br/>`;
+        });
+        return s;
+      }
+    },
+    legend: {
+      data: ['DUN占比', '多轮对话率', '小团答案完读率', '次7日留存率'],
+      textStyle: { color: '#aaa' }, top: 4, right: 12
+    },
+    grid: { left: 60, right: 20, top: 40, bottom: 36 },
+    xAxis: { type: 'category', data: metricsDays, axisLabel: { color: '#aaa' }, axisLine: { lineStyle: { color: '#333' } } },
+    yAxis: {
+      type: 'value', name: '%',
+      nameTextStyle: { color: '#666', fontSize: 11 },
+      axisLabel: { color: '#aaa', formatter: v => v + '%' },
+      splitLine: { lineStyle: { color: '#222' } },
+      min: 0
+    },
+    series: [
+      {
+        name: 'DUN占比', type: 'line', smooth: true,
+        symbol: 'circle', symbolSize: 6,
+        data: metricsDun,
+        lineStyle: { color: '#e86452', width: 2 },
+        itemStyle: { color: '#e86452' },
+        label: { show: true, position: 'top', color: '#e86452', fontSize: 10, formatter: p => p.value != null ? p.value.toFixed(1) + '%' : '' }
+      },
+      {
+        name: '多轮对话率', type: 'line', smooth: true,
+        symbol: 'circle', symbolSize: 6,
+        data: metricsMulti,
+        lineStyle: { color: '#5b8ff9', width: 2 },
+        itemStyle: { color: '#5b8ff9' },
+        label: { show: true, position: 'top', color: '#5b8ff9', fontSize: 10, formatter: p => p.value != null ? p.value.toFixed(1) + '%' : '' }
+      },
+      {
+        name: '小团答案完读率', type: 'line', smooth: true,
+        symbol: 'circle', symbolSize: 6,
+        data: metricsRead,
+        lineStyle: { color: '#61d9aa', width: 2 },
+        itemStyle: { color: '#61d9aa' },
+        label: { show: true, position: 'top', color: '#61d9aa', fontSize: 10, formatter: p => p.value != null ? p.value.toFixed(1) + '%' : '' }
+      },
+      {
+        name: '次7日留存率', type: 'line', smooth: true,
+        symbol: 'circle', symbolSize: 6,
+        data: metricsD7,
+        lineStyle: { color: '#f6bd16', width: 2 },
+        itemStyle: { color: '#f6bd16' },
+        label: { show: true, position: 'top', color: '#f6bd16', fontSize: 10, formatter: p => p.value != null ? p.value.toFixed(1) + '%' : '' }
+      }
+    ]
+  });
+}
+
+// ── 8. 小团平均搜索字符长度折线图 ─────────────────────────
+let metricsChart2 = null;
+if (metricsDays.length > 0) {
+  metricsChart2 = echarts.init(document.getElementById('metricsLine2'));
+  metricsChart2.setOption({
+    tooltip: {
+      trigger: 'axis',
+      formatter: params => {
+        let s = `<b>${params[0].axisValue}</b><br/>`;
+        params.forEach(p => {
+          if (p.value != null) s += `${p.marker}${p.seriesName}：<b>${p.value.toFixed(1)}</b> 字符<br/>`;
+        });
+        return s;
+      }
+    },
+    legend: { data: ['平均搜索字符长度'], textStyle: { color: '#aaa' }, top: 4 },
+    grid: { left: 60, right: 20, top: 40, bottom: 36 },
+    xAxis: { type: 'category', data: metricsDays, axisLabel: { color: '#aaa' }, axisLine: { lineStyle: { color: '#333' } } },
+    yAxis: {
+      type: 'value', name: '字符数',
+      nameTextStyle: { color: '#666', fontSize: 11 },
+      axisLabel: { color: '#aaa' },
+      splitLine: { lineStyle: { color: '#222' } },
+      min: 0
+    },
+    series: [{
+      name: '平均搜索字符长度', type: 'line', smooth: true,
+      symbol: 'circle', symbolSize: 7,
+      data: metricsChar,
+      lineStyle: { color: '#a371f7', width: 2.5 },
+      itemStyle: { color: '#a371f7' },
+      areaStyle: { color: { type: 'linear', x:0, y:0, x2:0, y2:1, colorStops: [{ offset:0, color: '#a371f755' }, { offset:1, color: '#a371f705' }] } },
+      label: { show: true, position: 'top', color: '#a371f7', fontSize: 11, formatter: p => p.value != null ? p.value.toFixed(1) : '' }
+    }]
+  });
+}
+
 // 响应式
 window.addEventListener('resize', () => {
   [barChart, lineChart, speedLineChart].forEach(c => c.resize());
+  if (metricsChart1) metricsChart1.resize();
+  if (metricsChart2) metricsChart2.resize();
   ["d421", "d422", "d423", "d424", "d425", "d426", "d427", "d428"].concat(["s421", "s422", "s423", "s424", "s425", "s426", "s427", "s428"])
     .forEach(id => echarts.getInstanceByDom(document.getElementById(id))?.resize());
 });
