@@ -34,7 +34,7 @@
 
 <h1>🔍 问小团战役 搜索QV趋势</h1>
 <p class="subtitle">数据来源：柱状图 = 看板2737（搜索专项效果报表，日维度官方口径）· 折线图 = 看板2738（分时实时累计）</p>
-<p class="subtitle2">仅外投带来，非小团大盘数据 · 4月20日–4月26日 · 更新于 2026-04-27 23:30</p>
+<p class="subtitle2">仅外投带来，非小团大盘数据 · 4月20日–4月27日 · 更新于 2026-04-28 11:17</p>
 
 <!-- 进度卡片 -->
 <div class="progress-row">
@@ -44,19 +44,19 @@
   </div>
   <div class="prog-card">
     <div class="label">已完成 QV</div>
-    <div class="value green">8,355,368</div>
+    <div class="value green">9,311,186</div>
   </div>
   <div class="prog-card">
     <div class="label">目标完成率</div>
-    <div class="value red">49.1%</div>
+    <div class="value yellow">54.8%</div>
   </div>
   <div class="prog-card">
     <div class="label">剩余 QV 缺口</div>
-    <div class="value yellow">8,644,632</div>
+    <div class="value yellow">7,688,814</div>
   </div>
   <div class="prog-card">
     <div class="label">剩余总预算</div>
-    <div class="value">6,508,149</div>
+    <div class="value">5,305,470</div>
   </div>
   <div class="prog-card">
     <div class="label">后续成本控制目标</div>
@@ -64,11 +64,11 @@
   </div>
   <div class="prog-card">
     <div class="label">搜索QV成本（看板）</div>
-    <div class="value yellow">2.0 元</div>
+    <div class="value yellow">1.6 元</div>
   </div>
   <div class="prog-card">
     <div class="label">搜索UV成本（看板）</div>
-    <div class="value yellow">2.58 元</div>
+    <div class="value yellow">2.5 元</div>
   </div>
 </div>
 
@@ -76,10 +76,10 @@
 <div class="prog-bar-wrap">
   <div class="prog-bar-label">
     <span>QV 目标进度</span>
-    <span>8,355,368 / 17,000,000（49.1%）</span>
+    <span>9,311,186 / 17,000,000（54.8%）</span>
   </div>
   <div class="prog-bar-bg">
-    <div class="prog-bar-fill" style="width:49.1%"></div>
+    <div class="prog-bar-fill" style="width:54.8%"></div>
   </div>
 </div>
 
@@ -89,10 +89,10 @@
 
   <div class="prog-bar-label">
     <span>投流预算</span>
-    <span>7,655,246 / 13,150,000（58.2%）</span>
+    <span>8,857,925 / 13,150,000（67.4%）</span>
   </div>
   <div class="prog-bar-bg" style="margin-bottom:16px">
-    <div class="prog-bar-fill" style="width:58.2%; background: linear-gradient(90deg, #5b8ff9, #8ecdf7)"></div>
+    <div class="prog-bar-fill" style="width:67.4%; background: linear-gradient(90deg, #5b8ff9, #8ecdf7)"></div>
   </div>
 
   <div class="prog-bar-label">
@@ -105,10 +105,10 @@
 
   <div class="prog-bar-label">
     <span>总预算（目标 20,000,000）</span>
-    <span>13,491,851 / 20,000,000（67.5%）</span>
+    <span>14,694,530 / 20,000,000（73.5%）</span>
   </div>
   <div class="prog-bar-bg">
-    <div class="prog-bar-fill" style="width:67.5%; background: linear-gradient(90deg, #f6bd16, #e86452)"></div>
+    <div class="prog-bar-fill" style="width:73.5%; background: linear-gradient(90deg, #f6bd16, #e86452)"></div>
   </div>
 </div>
 
@@ -155,6 +155,10 @@
     <div class="chart-title">4月27日 分时累计QV</div>
     <div id="d427" class="chart" style="height:220px"></div>
   </div>
+  <div class="chart-wrap">
+    <div class="chart-title">4月28日 分时累计QV</div>
+    <div id="d428" class="chart" style="height:220px"></div>
+  </div>
 </div>
 
 <!-- 每日分时增速 -->
@@ -192,19 +196,23 @@
     <div class="chart-title">4月27日 分时新增QV</div>
     <div id="s427" class="chart" style="height:220px"></div>
   </div>
+  <div class="chart-wrap">
+    <div class="chart-title">4月28日 分时新增QV</div>
+    <div id="s428" class="chart" style="height:220px"></div>
+  </div>
 </div>
 
 <script>
 // ── 原始数据（分时，看板2738口径）────────────────────────
-const raw = {"4/21": {"18": 176598, "19": 178544, "20": 202435, "21": 267506, "22": 387135, "23": 458420}, "4/22": {"9": 26206, "10": 28715, "11": 31130, "12": 164484, "15": 261424}, "4/23": {"9": 176557, "10": 229275, "11": 255115, "12": 453748, "13": 719002, "14": 831874, "15": 915889, "16": 994244, "17": 994244, "18": 1245212, "19": 1299495, "20": 1314528, "21": 1334695, "22": 1423538, "23": 1449423, "0": 1506143}, "4/24": {"9": 2460027, "10": 2700730, "11": 2719421, "12": 2734116, "13": 2746573, "14": 2756758, "15": 2771161, "17": 2941290, "18": 3026223, "19": 3085861, "20": 3100448, "21": 3106628, "22": 3115709, "23": 3124670, "0": 3133102}, "4/25": {"9": 47040, "10": 107675, "11": 224420, "12": 386480, "13": 540182, "14": 741084, "15": 780802, "16": 795192, "17": 809208, "18": 821905, "19": 838964, "20": 891147, "21": 966792, "22": 981427, "0": 1093114}, "4/26": {"9": 40139, "10": 113636, "11": 167068, "12": 268658, "13": 346035, "14": 378761, "15": 399813, "16": 412233, "17": 437556, "18": 727064, "19": 875216, "20": 937196, "21": 1001083, "22": 1116085, "23": 1125243, "0": 1130653}, "4/27": {"9": 24313, "10": 87352, "11": 126966, "12": 165977, "13": 230105, "14": 316044, "15": 421496, "16": 516197, "17": 585384, "18": 692685, "19": 835450, "20": 894666, "21": 904757, "22": 914301, "23": 917448}};
+const raw = {"4/21": {"18": 176598, "19": 178544, "20": 202435, "21": 267506, "22": 387135, "23": 458420}, "4/22": {"9": 26206, "10": 28715, "11": 31130, "12": 164484, "15": 261424}, "4/23": {"9": 176557, "10": 229275, "11": 255115, "12": 453748, "13": 719002, "14": 831874, "15": 915889, "16": 994244, "17": 994244, "18": 1245212, "19": 1299495, "20": 1314528, "21": 1334695, "22": 1423538, "23": 1449423, "0": 1506143}, "4/24": {"9": 2460027, "10": 2700730, "11": 2719421, "12": 2734116, "13": 2746573, "14": 2756758, "15": 2771161, "17": 2941290, "18": 3026223, "19": 3085861, "20": 3100448, "21": 3106628, "22": 3115709, "23": 3124670, "0": 3133102}, "4/25": {"9": 47040, "10": 107675, "11": 224420, "12": 386480, "13": 540182, "14": 741084, "15": 780802, "16": 795192, "17": 809208, "18": 821905, "19": 838964, "20": 891147, "21": 966792, "22": 981427, "0": 1093114}, "4/26": {"9": 40139, "10": 113636, "11": 167068, "12": 268658, "13": 346035, "14": 378761, "15": 399813, "16": 412233, "17": 437556, "18": 727064, "19": 875216, "20": 937196, "21": 1001083, "22": 1116085, "23": 1125243, "0": 1130653}, "4/27": {"9": 24313, "10": 87352, "11": 126966, "12": 165977, "13": 230105, "14": 316044, "15": 421496, "16": 516197, "17": 585384, "18": 692685, "19": 835450, "20": 894666, "21": 904757, "22": 914301, "23": 917448}, "4/28": {"9": 48605, "10": 69368, "11": 128991}};
 
 // ── 柱状图数据（看板2737日维度官方口径）─────────────────
-const barDays   = ["4/20", "4/21", "4/22", "4/23", "4/24", "4/25", "4/26"];
-const barMax    = [268530, 503497, 552584, 1548541, 3193347, 1113107, 1175762];
-const barColors = ["#8ecdf7", "#5b8ff9", "#61d9aa", "#f6bd16", "#e86452", "#a371f7", "#ff9d4d"];
+const barDays   = ["4/20", "4/21", "4/22", "4/23", "4/24", "4/25", "4/26", "4/27"];
+const barMax    = [268530, 503497, 552584, 1548541, 3193347, 1113107, 1175762, 955818];
+const barColors = ["#8ecdf7", "#5b8ff9", "#61d9aa", "#f6bd16", "#e86452", "#a371f7", "#ff9d4d", "#36cfc9"];
 
-const lineDays   = ["4/21", "4/22", "4/23", "4/24", "4/25", "4/26", "4/27"];
-const lineColors = ["#5b8ff9", "#61d9aa", "#f6bd16", "#e86452", "#a371f7", "#ff9d4d", "#36cfc9"];
+const lineDays   = ["4/21", "4/22", "4/23", "4/24", "4/25", "4/26", "4/27", "4/28"];
+const lineColors = ["#5b8ff9", "#61d9aa", "#f6bd16", "#e86452", "#a371f7", "#ff9d4d", "#36cfc9", "#ff85c0"];
 
 // ── 工具函数 ──────────────────────────────────────────────
 function fmtNum(v) {
@@ -225,7 +233,7 @@ function toSorted(obj) {
 
 // ── 1. 每日柱状图（看板2737官方口径）+ 累计进度折线 ─────
 const QV_TARGET   = 17000000;
-const cumulative  = [268530, 772027, 1324611, 2873152, 6066499, 7179606, 8355368];
+const cumulative  = [268530, 772027, 1324611, 2873152, 6066499, 7179606, 8355368, 9311186];
 
 const barChart = echarts.init(document.getElementById('dailyBar'));
 barChart.setOption({
@@ -357,6 +365,7 @@ function renderDayChart(elId, day, color) {
   renderDayChart('d425', '4/25', lineColors[4]);
   renderDayChart('d426', '4/26', lineColors[5]);
   renderDayChart('d427', '4/27', lineColors[6]);
+  renderDayChart('d428', '4/28', lineColors[7]);
 
 // ── 4. 分时新增计算 ───────────────────────────────────────
 function calcDelta(day) {
@@ -449,11 +458,12 @@ function renderSpeedChart(elId, day, color) {
   renderSpeedChart('s425', '4/25', lineColors[4]);
   renderSpeedChart('s426', '4/26', lineColors[5]);
   renderSpeedChart('s427', '4/27', lineColors[6]);
+  renderSpeedChart('s428', '4/28', lineColors[7]);
 
 // 响应式
 window.addEventListener('resize', () => {
   [barChart, lineChart, speedLineChart].forEach(c => c.resize());
-  ["d421", "d422", "d423", "d424", "d425", "d426", "d427"].concat(["s421", "s422", "s423", "s424", "s425", "s426", "s427"])
+  ["d421", "d422", "d423", "d424", "d425", "d426", "d427", "d428"].concat(["s421", "s422", "s423", "s424", "s425", "s426", "s427", "s428"])
     .forEach(id => echarts.getInstanceByDom(document.getElementById(id))?.resize());
 });
 </script>
