@@ -27,6 +27,53 @@
   .tab-pane { display: none; }
   .tab-pane.active { display: block; }
 
+  /* 事项推进 */
+  .task-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; flex-wrap: wrap; gap: 10px; }
+  .task-filter { display: flex; gap: 8px; flex-wrap: wrap; }
+  .filter-btn { padding: 4px 12px; border-radius: 12px; font-size: 12px; cursor: pointer; border: 1px solid #2a2d3a; background: #13161f; color: #888; transition: all 0.2s; }
+  .filter-btn.active { background: #5b8ff9; border-color: #5b8ff9; color: #fff; }
+  .task-list { display: flex; flex-direction: column; gap: 12px; }
+  .task-card { background: #13161f; border-radius: 10px; padding: 16px 18px; border: 1px solid #22253a; border-left: 4px solid; transition: border-color 0.2s; }
+  .task-card.status-done    { border-left-color: #61d9aa; }
+  .task-card.status-doing   { border-left-color: #5b8ff9; }
+  .task-card.status-blocked { border-left-color: #e86452; }
+  .task-card.status-pending { border-left-color: #888; }
+  .task-card:hover { border-color: #2a3050; }
+  .task-top { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; margin-bottom: 10px; }
+  .task-title { font-size: 14px; font-weight: 600; color: #e0e0e0; line-height: 1.5; flex: 1; }
+  .task-badges { display: flex; gap: 6px; align-items: center; flex-shrink: 0; flex-wrap: wrap; }
+  .status-badge { font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 4px; white-space: nowrap; }
+  .status-badge.done    { background: rgba(97,217,170,.2); color: #61d9aa; border: 1px solid rgba(97,217,170,.3); }
+  .status-badge.doing   { background: rgba(91,143,249,.2); color: #5b8ff9; border: 1px solid rgba(91,143,249,.3); }
+  .status-badge.blocked { background: rgba(232,100,82,.2); color: #e86452; border: 1px solid rgba(232,100,82,.3); }
+  .status-badge.pending { background: rgba(136,136,136,.15); color: #888; border: 1px solid rgba(136,136,136,.2); }
+  .priority-badge { font-size: 11px; padding: 2px 7px; border-radius: 4px; white-space: nowrap; }
+  .priority-badge.p0 { background: rgba(232,100,82,.15); color: #e86452; border: 1px solid rgba(232,100,82,.25); }
+  .priority-badge.p1 { background: rgba(246,189,22,.15); color: #f6bd16; border: 1px solid rgba(246,189,22,.25); }
+  .priority-badge.p2 { background: rgba(136,136,136,.1); color: #888; border: 1px solid rgba(136,136,136,.2); }
+  .task-meta { display: flex; gap: 16px; flex-wrap: wrap; font-size: 12px; color: #666; margin-bottom: 8px; }
+  .task-meta span { display: flex; align-items: center; gap: 4px; }
+  .task-meta .owner { color: #a8b4cc; }
+  .task-meta .ddl { color: #888; }
+  .task-meta .ddl.overdue { color: #e86452; }
+  .task-meta .ddl.soon { color: #f6bd16; }
+  .task-desc { font-size: 13px; color: #888; line-height: 1.6; }
+  .task-progress { margin-top: 10px; }
+  .task-progress .prog-bg { background: #2a2d3a; border-radius: 3px; height: 4px; overflow: hidden; }
+  .task-progress .prog-fill { height: 100%; border-radius: 3px; }
+  .task-progress .prog-label { font-size: 11px; color: #555; margin-bottom: 4px; display: flex; justify-content: space-between; }
+  .task-deps { margin-top: 8px; font-size: 12px; color: #555; }
+  .task-deps .dep-tag { display: inline-block; padding: 1px 7px; border-radius: 3px; background: #1e2130; border: 1px solid #2a2d3a; color: #666; margin-right: 4px; }
+  .task-update { margin-top: 8px; padding: 8px 12px; background: #0f1117; border-radius: 6px; font-size: 12px; color: #666; line-height: 1.5; border-left: 2px solid #2a2d3a; }
+  .task-update .update-time { color: #444; margin-right: 6px; }
+  .task-update .update-content { color: #888; }
+  .summary-cards { display: flex; gap: 12px; margin-bottom: 20px; flex-wrap: wrap; }
+  .summary-card { background: #1a1d27; border-radius: 10px; padding: 14px 18px; flex: 1; min-width: 100px; border: 1px solid #22253a; text-align: center; }
+  .summary-card .num { font-size: 26px; font-weight: 700; }
+  .summary-card .lbl { font-size: 11px; color: #666; margin-top: 4px; }
+  .source-note { font-size: 12px; color: #444; margin-bottom: 16px; display: flex; align-items: center; gap: 6px; }
+  .source-dot { width: 6px; height: 6px; border-radius: 50%; background: #2a2d3a; flex-shrink: 0; }
+
   /* KPI 卡片 */
   .card-row { display: flex; gap: 14px; margin-bottom: 24px; flex-wrap: wrap; }
   .kpi-card { background: #1a1d27; border-radius: 12px; padding: 16px 20px; flex: 1; min-width: 130px; border: 1px solid #22253a; }
@@ -97,6 +144,7 @@
   <button class="tab-btn active" id="btn-overview" onclick="switchTab('overview', this)">&#x1F4CA; 总览</button>
   <button class="tab-btn" id="btn-weekly" onclick="switchTab('weekly', this)">&#x1F4C5; 周对比</button>
   <button class="tab-btn" id="btn-detail" onclick="switchTab('detail', this)">&#x1F50D; 每日明细</button>
+  <button class="tab-btn" id="btn-tasks" onclick="switchTab('tasks', this)">&#x1F4CC; 事项推进</button>
 </div>
 
 <!-- ====== 总览 TAB ====== -->
@@ -231,6 +279,212 @@
   </div>
 </div>
 
+<!-- ====== 事项推进 TAB ====== -->
+<div class="tab-pane" id="tab-tasks">
+
+  <!-- 数据来源 -->
+  <div class="source-note">
+    <div class="source-dot"></div>
+    数据来源：大象群「聊下市场拉新用户数据」· 自动提取 · 最后同步 2026-06-11 12:58
+  </div>
+
+  <!-- 汇总卡片 -->
+  <div class="summary-cards">
+    <div class="summary-card">
+      <div class="num green">1</div>
+      <div class="lbl">已完成</div>
+    </div>
+    <div class="summary-card">
+      <div class="num blue">3</div>
+      <div class="lbl">进行中</div>
+    </div>
+    <div class="summary-card">
+      <div class="num red">1</div>
+      <div class="lbl">阻塞中</div>
+    </div>
+    <div class="summary-card">
+      <div class="num" style="color:#888">1</div>
+      <div class="lbl">待启动</div>
+    </div>
+  </div>
+
+  <!-- 筛选 -->
+  <div class="task-header">
+    <div style="font-size:13px;color:#666">共 6 个事项</div>
+    <div class="task-filter">
+      <button class="filter-btn active" onclick="filterTasks('all',this)">全部</button>
+      <button class="filter-btn" onclick="filterTasks('doing',this)">进行中</button>
+      <button class="filter-btn" onclick="filterTasks('blocked',this)">阻塞</button>
+      <button class="filter-btn" onclick="filterTasks('done',this)">已完成</button>
+      <button class="filter-btn" onclick="filterTasks('pending',this)">待启动</button>
+    </div>
+  </div>
+
+  <!-- 事项列表 -->
+  <div class="task-list" id="taskList">
+
+    <!-- 事项1 -->
+    <div class="task-card status-doing" data-status="doing">
+      <div class="task-top">
+        <div class="task-title">新客用户标签建设（365新客定义 + 底表搭建）</div>
+        <div class="task-badges">
+          <span class="priority-badge p0">P0</span>
+          <span class="status-badge doing">进行中</span>
+        </div>
+      </div>
+      <div class="task-meta">
+        <span class="owner">&#x1F464; 王彦宏（负责）· 迟卫东（数据）</span>
+        <span class="ddl soon">&#x1F4C5; DDL：本周内（06-13）</span>
+      </div>
+      <div class="task-desc">新用户定义为365天未使用过小团搜索的用户，需建设业务底表，新增365新客标签字段，可供下游直接引用。同时用365标签追溯五一投放历史数据。</div>
+      <div class="task-deps">
+        <span>下游依赖：</span>
+        <span class="dep-tag">投放RTA</span>
+        <span class="dep-tag">离线看板</span>
+        <span class="dep-tag">实时ocpx回传</span>
+        <span class="dep-tag">阅读归因新口径</span>
+      </div>
+      <div class="task-progress">
+        <div class="prog-label"><span>进度</span><span>60%</span></div>
+        <div class="prog-bg"><div class="prog-fill" style="width:60%;background:linear-gradient(90deg,#5b8ff9,#8ecdf7)"></div></div>
+      </div>
+      <div class="task-update">
+        <span class="update-time">06-11 12:45</span>
+        <span class="update-content">王彦宏确认本周内交付新客标签</span>
+      </div>
+    </div>
+
+    <!-- 事项2 -->
+    <div class="task-card status-doing" data-status="doing">
+      <div class="task-top">
+        <div class="task-title">小团新客实时流 RTA 算法能力建设</div>
+        <div class="task-badges">
+          <span class="priority-badge p0">P0</span>
+          <span class="status-badge doing">进行中</span>
+        </div>
+      </div>
+      <div class="task-meta">
+        <span class="owner">&#x1F464; 郭枫（负责）· 郭宇凡（算法）</span>
+        <span class="ddl soon">&#x1F4C5; DDL：06-20</span>
+      </div>
+      <div class="task-desc">暑期战役前配合市场侧建设小团新客实时流的RTA算法能力，基于新客标签对新客进行精准把控。郭枫已确认 6.20 交付，会提前做相关测试。</div>
+      <div class="task-deps">
+        <span>前置依赖：</span>
+        <span class="dep-tag">365新客标签（事项1）</span>
+      </div>
+      <div class="task-progress">
+        <div class="prog-label"><span>进度</span><span>20%</span></div>
+        <div class="prog-bg"><div class="prog-fill" style="width:20%;background:linear-gradient(90deg,#5b8ff9,#8ecdf7)"></div></div>
+      </div>
+      <div class="task-update">
+        <span class="update-time">06-05 16:42</span>
+        <span class="update-content">郭枫：2的ddl是6.20交付，我们提前会做相关测试</span>
+      </div>
+    </div>
+
+    <!-- 事项3 -->
+    <div class="task-card status-doing" data-status="doing">
+      <div class="task-top">
+        <div class="task-title">市场营销归因口径升级（阅读归因收窄至纯新客）</div>
+        <div class="task-badges">
+          <span class="priority-badge p0">P0</span>
+          <span class="status-badge doing">进行中</span>
+        </div>
+      </div>
+      <div class="task-meta">
+        <span class="owner">&#x1F464; 迟卫东（数据产品）· 黄珊（数仓）</span>
+        <span class="ddl">&#x1F4C5; 暑期战役前</span>
+      </div>
+      <div class="task-desc">将阅读归因从「全部人群」收窄为「365新客」，更新归因表 mart_traffic.dwt_attrib_com_search_event_d，上线后将包含P0/P1/P2三类归因。同步对纵横看板字段进行调整。</div>
+      <div class="task-deps">
+        <span>前置依赖：</span>
+        <span class="dep-tag">365新客标签（事项1）</span>
+      </div>
+      <div class="task-progress">
+        <div class="prog-label"><span>进度</span><span>40%</span></div>
+        <div class="prog-bg"><div class="prog-fill" style="width:40%;background:linear-gradient(90deg,#a371f7,#c89ef7)"></div></div>
+      </div>
+      <div class="task-update">
+        <span class="update-time">06-08 20:50</span>
+        <span class="update-content">迟卫东确认：新客标签交付后，归因表将同步包含P0/P1/P2三类归因</span>
+      </div>
+    </div>
+
+    <!-- 事项4 -->
+    <div class="task-card status-blocked" data-status="blocked">
+      <div class="task-top">
+        <div class="task-title">历史小团新用户数量回刷（新口径，供费效判断）</div>
+        <div class="task-badges">
+          <span class="priority-badge p1">P1</span>
+          <span class="status-badge blocked">阻塞中</span>
+        </div>
+      </div>
+      <div class="task-meta">
+        <span class="owner">&#x1F464; 杨洋（需求方）· 王彦宏（负责）</span>
+        <span class="ddl">&#x1F4C5; 待标签完成后启动</span>
+      </div>
+      <div class="task-desc">基于365新客定义，回刷历史小团新用户数量，供内容营销判断费效空间，以及捞美团老客中小团新用户做定向投放规模评估。</div>
+      <div class="task-deps">
+        <span>阻塞原因：</span>
+        <span class="dep-tag">等待365新客标签上线（事项1）</span>
+      </div>
+      <div class="task-progress">
+        <div class="prog-label"><span>进度</span><span>0%</span></div>
+        <div class="prog-bg"><div class="prog-fill" style="width:0%;background:#e86452"></div></div>
+      </div>
+      <div class="task-update">
+        <span class="update-time">06-04 15:40</span>
+        <span class="update-content">杨洋：我理解是标签出完，直接回刷一版数就ok</span>
+      </div>
+    </div>
+
+    <!-- 事项5 -->
+    <div class="task-card status-done" data-status="done">
+      <div class="task-top">
+        <div class="task-title">新老客用户分层口径对齐（市场&数据共识）</div>
+        <div class="task-badges">
+          <span class="priority-badge p1">P1</span>
+          <span class="status-badge done">已完成</span>
+        </div>
+      </div>
+      <div class="task-meta">
+        <span class="owner">&#x1F464; 李姝婧 · 王彦宏</span>
+        <span class="ddl">&#x1F4C5; 06-11 完成对齐</span>
+      </div>
+      <div class="task-desc">明确新用户定义为365天未使用过小团搜索，区分30新与365新两个口径。市场侧与数据侧完成共识，排期已由王彦宏确认本周内完成。</div>
+      <div class="task-progress">
+        <div class="prog-label"><span>进度</span><span>100%</span></div>
+        <div class="prog-bg"><div class="prog-fill" style="width:100%;background:linear-gradient(90deg,#61d9aa,#a8e8cc)"></div></div>
+      </div>
+      <div class="task-update">
+        <span class="update-time">06-11 11:57</span>
+        <span class="update-content">李姝婧：1-done，已与彦宏老师对齐，待王彦宏反馈排期情况</span>
+      </div>
+    </div>
+
+    <!-- 事项6 -->
+    <div class="task-card status-pending" data-status="pending">
+      <div class="task-top">
+        <div class="task-title">小红书 vs 抖音/B站来源用户差异分析（低留存归因）</div>
+        <div class="task-badges">
+          <span class="priority-badge p2">P2</span>
+          <span class="status-badge pending">待启动</span>
+        </div>
+      </div>
+      <div class="task-meta">
+        <span class="owner">&#x1F464; 黄珊（数仓）</span>
+        <span class="ddl overdue">&#x1F4C5; 暂无排期（黄珊：当前排期已饱和）</span>
+      </div>
+      <div class="task-desc">下探小红书来源用户对话内容，对比抖音/B站媒体在人群属性上的差异，找到小红书低留存原因，评估媒体与小团的匹配性。</div>
+      <div class="task-update">
+        <span class="update-time">06-04 16:53</span>
+        <span class="update-content">黄珊：我们当前排期已经饱和，暂时没办法支持这个项目</span>
+      </div>
+    </div>
+
+  </div><!-- /task-list -->
+</div>
+
 <!-- ====== 每日明细 TAB ====== -->
 <div class="tab-pane" id="tab-detail">
   <div class="chart-wrap">
@@ -302,6 +556,21 @@ function switchTab(id, btn) {
   document.getElementById('tab-' + id).classList.add('active');
   btn.classList.add('active');
   setTimeout(function() { window.dispatchEvent(new Event('resize')); }, 60);
+}
+
+// =====================
+// 事项筛选
+// =====================
+function filterTasks(status, btn) {
+  document.querySelectorAll('.filter-btn').forEach(function(b) { b.classList.remove('active'); });
+  btn.classList.add('active');
+  document.querySelectorAll('.task-card').forEach(function(card) {
+    if (status === 'all' || card.dataset.status === status) {
+      card.style.display = '';
+    } else {
+      card.style.display = 'none';
+    }
+  });
 }
 
 // =====================
