@@ -1,0 +1,590 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<title>问小团战役 QV周报趋势图 - Demo</title>
+<script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { background: #0f1117; color: #e0e0e0; font-family: -apple-system, "PingFang SC", sans-serif; padding: 24px; }
+
+  h1 { font-size: 20px; font-weight: 600; color: #fff; margin-bottom: 6px; }
+  .subtitle  { font-size: 13px; color: #888; margin-bottom: 4px; }
+  .subtitle2 { font-size: 12px; color: #555; margin-bottom: 24px; }
+
+  /* 周次色标 */
+  .week-badges { display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap; }
+  .week-badge { padding: 5px 14px; border-radius: 6px; font-size: 12px; font-weight: 500; border: 1px solid; }
+  .w1-badge { background: rgba(91,143,249,.12); border-color: #5b8ff9; color: #5b8ff9; }
+  .w2-badge { background: rgba(97,217,170,.12); border-color: #61d9aa; color: #61d9aa; }
+  .w3-badge { background: rgba(246,189,22,.12); border-color: #f6bd16; color: #f6bd16; }
+
+  /* Tab */
+  .tab-bar { display: flex; gap: 8px; margin-bottom: 24px; }
+  .tab-btn { padding: 7px 20px; border-radius: 20px; font-size: 13px; cursor: pointer; border: 1px solid #2a2d3a; background: #1a1d27; color: #888; transition: all 0.2s; }
+  .tab-btn.active { background: #5b8ff9; border-color: #5b8ff9; color: #fff; font-weight: 600; }
+  .tab-btn:hover:not(.active) { border-color: #5b8ff9; color: #c8d0e0; }
+  .tab-pane { display: none; }
+  .tab-pane.active { display: block; }
+
+  /* KPI 卡片 */
+  .card-row { display: flex; gap: 14px; margin-bottom: 24px; flex-wrap: wrap; }
+  .kpi-card { background: #1a1d27; border-radius: 12px; padding: 16px 20px; flex: 1; min-width: 130px; border: 1px solid #22253a; }
+  .kpi-card .lbl { font-size: 11px; color: #666; margin-bottom: 6px; letter-spacing: 0.3px; }
+  .kpi-card .val { font-size: 22px; font-weight: 700; color: #fff; }
+  .kpi-card .delta { font-size: 12px; margin-top: 5px; }
+  .green { color: #61d9aa; }
+  .blue  { color: #5b8ff9; }
+  .yellow{ color: #f6bd16; }
+  .red   { color: #e86452; }
+  .up    { color: #61d9aa; }
+  .down  { color: #e86452; }
+  .flat  { color: #888; }
+
+  /* 图表容器 */
+  .chart-wrap { background: #1a1d27; border-radius: 12px; padding: 20px 24px 12px; margin-bottom: 24px; border: 1px solid #22253a; }
+  .chart-title { font-size: 14px; font-weight: 600; color: #c8d0e0; margin-bottom: 16px; display: flex; align-items: center; gap: 8px; }
+  .chart-badge { font-size: 11px; font-weight: 500; padding: 2px 8px; border-radius: 4px; background: rgba(91,143,249,.2); color: #5b8ff9; border: 1px solid rgba(91,143,249,.3); }
+  .chart { width: 100%; }
+
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+  @media (max-width: 900px) { .grid-2 { grid-template-columns: 1fr; } }
+
+  /* 进度条 */
+  .prog-wrap { background: #1a1d27; border-radius: 12px; padding: 20px 24px; margin-bottom: 24px; border: 1px solid #22253a; }
+  .section-title { font-size: 12px; font-weight: 600; color: #555; letter-spacing: 0.8px; text-transform: uppercase; margin: 0 0 16px; }
+  .prog-row { margin-bottom: 14px; }
+  .prog-row:last-child { margin-bottom: 0; }
+  .prog-meta { display: flex; justify-content: space-between; font-size: 12px; color: #888; margin-bottom: 7px; }
+  .prog-meta .pname { color: #c8d0e0; }
+  .prog-bg { background: #2a2d3a; border-radius: 6px; height: 10px; overflow: hidden; }
+  .prog-fill { height: 100%; border-radius: 6px; transition: width 0.8s cubic-bezier(.4,0,.2,1); }
+
+  /* 洞察 */
+  .insight-list { display: flex; flex-direction: column; gap: 10px; }
+  .insight-item { background: #13161f; border-radius: 8px; padding: 12px 16px; border-left: 3px solid; font-size: 13px; line-height: 1.6; color: #c8d0e0; }
+  .insight-item.good { border-color: #61d9aa; }
+  .insight-item.warn { border-color: #f6bd16; }
+  .insight-item.info { border-color: #5b8ff9; }
+  .itag { font-size: 11px; font-weight: 600; margin-right: 6px; padding: 1px 6px; border-radius: 3px; }
+  .insight-item.good .itag { background: rgba(97,217,170,.2); color: #61d9aa; }
+  .insight-item.warn .itag { background: rgba(246,189,22,.2); color: #f6bd16; }
+  .insight-item.info .itag { background: rgba(91,143,249,.2); color: #5b8ff9; }
+
+  /* 表格 */
+  .week-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  .week-table th { text-align: left; padding: 10px 14px; color: #666; font-weight: 500; border-bottom: 1px solid #22253a; font-size: 12px; }
+  .week-table td { padding: 12px 14px; border-bottom: 1px solid #1e2130; color: #c8d0e0; }
+  .week-table tr:last-child td { border-bottom: none; }
+  .week-table tr:hover td { background: #1e2130; }
+  .num { font-variant-numeric: tabular-nums; font-weight: 600; color: #fff; }
+  .wlabel { display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 11px; }
+</style>
+</head>
+<body>
+
+<h1>&#x1F50D; 问小团战役 搜索QV周报</h1>
+<p class="subtitle">数据来源：看板2737（搜索专项效果报表，日维度官方口径）· 周维度聚合</p>
+<p class="subtitle2">仅外投带来，非小团大盘数据 · 4月20日-5月9日（共3周）· Demo 样式预览</p>
+
+<div class="week-badges">
+  <div class="week-badge w1-badge">W1 · 4/20-4/26</div>
+  <div class="week-badge w2-badge">W2 · 4/27-5/3</div>
+  <div class="week-badge w3-badge">W3 · 5/4-5/9（截止）</div>
+</div>
+
+<div class="tab-bar">
+  <button class="tab-btn active" id="btn-overview" onclick="switchTab('overview', this)">&#x1F4CA; 总览</button>
+  <button class="tab-btn" id="btn-weekly" onclick="switchTab('weekly', this)">&#x1F4C5; 周对比</button>
+  <button class="tab-btn" id="btn-detail" onclick="switchTab('detail', this)">&#x1F50D; 每日明细</button>
+</div>
+
+<!-- ====== 总览 TAB ====== -->
+<div class="tab-pane active" id="tab-overview">
+  <div class="card-row">
+    <div class="kpi-card">
+      <div class="lbl">QV 总目标</div>
+      <div class="val blue">1,700w</div>
+    </div>
+    <div class="kpi-card">
+      <div class="lbl">已完成 QV</div>
+      <div class="val green">16,654,562</div>
+      <div class="delta up">战役累计</div>
+    </div>
+    <div class="kpi-card">
+      <div class="lbl">目标完成率</div>
+      <div class="val green">98.0%</div>
+    </div>
+    <div class="kpi-card">
+      <div class="lbl">周均 QV</div>
+      <div class="val yellow">5,551,521</div>
+    </div>
+    <div class="kpi-card">
+      <div class="lbl">最强周（W2）</div>
+      <div class="val green">6,321,480</div>
+      <div class="delta up">全场最高</div>
+    </div>
+    <div class="kpi-card">
+      <div class="lbl">QV 成本（看板）</div>
+      <div class="val green">1.16 元</div>
+    </div>
+  </div>
+
+  <div class="prog-wrap">
+    <div class="section-title">战役目标进度</div>
+    <div class="prog-row">
+      <div class="prog-meta"><span class="pname">QV 总进度</span><span>16,654,562 / 17,000,000（98.0%）</span></div>
+      <div class="prog-bg"><div class="prog-fill" style="width:98%;background:linear-gradient(90deg,#5b8ff9,#61d9aa)"></div></div>
+    </div>
+    <div class="prog-row">
+      <div class="prog-meta"><span class="pname">W1 贡献</span><span>5,204,186（30.6%）</span></div>
+      <div class="prog-bg"><div class="prog-fill" style="width:30.6%;background:linear-gradient(90deg,#5b8ff9,#8ecdf7)"></div></div>
+    </div>
+    <div class="prog-row">
+      <div class="prog-meta"><span class="pname">W2 贡献</span><span>6,321,480（37.2%）</span></div>
+      <div class="prog-bg"><div class="prog-fill" style="width:37.2%;background:linear-gradient(90deg,#61d9aa,#a8e8cc)"></div></div>
+    </div>
+    <div class="prog-row">
+      <div class="prog-meta"><span class="pname">W3 贡献（6天）</span><span>5,128,896（30.2%）</span></div>
+      <div class="prog-bg"><div class="prog-fill" style="width:30.2%;background:linear-gradient(90deg,#f6bd16,#e86452)"></div></div>
+    </div>
+  </div>
+
+  <div class="chart-wrap">
+    <div class="chart-title">&#x1F4CA; 周维度 QV 对比 <span class="chart-badge">3周汇总</span></div>
+    <div id="weeklyBar" class="chart" style="height:300px"></div>
+  </div>
+
+  <div class="grid-2">
+    <div class="chart-wrap">
+      <div class="chart-title">&#x1F4C8; 周均日 QV 趋势</div>
+      <div id="dailyAvgLine" class="chart" style="height:260px"></div>
+    </div>
+    <div class="chart-wrap">
+      <div class="chart-title">&#x26A1; 周 QV 环比增长率</div>
+      <div id="weeklyGrowth" class="chart" style="height:260px"></div>
+    </div>
+  </div>
+
+  <div class="chart-wrap">
+    <div class="chart-title">&#x1F4A1; 周报洞察</div>
+    <div class="insight-list">
+      <div class="insight-item good"><span class="itag">亮点</span>W2（4/27-5/3）为战役最强周，周 QV 达 632.1万，五一假期带来明显流量峰值，日均 QV 超 90万。</div>
+      <div class="insight-item good"><span class="itag">进度</span>截至 W3 第 6 天，战役累计 QV 已达 1665万，完成率 98%，目标达成基本锁定。</div>
+      <div class="insight-item warn"><span class="itag">注意</span>W3（5/4-5/9）为不完整周，日均 QV 约 85.5万，较 W2 高峰下降约 5.4%，节后流量有所回落。</div>
+      <div class="insight-item info"><span class="itag">成本</span>QV 成本维持 1.16 元，远低于预算控制目标（10 元/QV），投放效率持续优秀。</div>
+    </div>
+  </div>
+</div>
+
+<!-- ====== 周对比 TAB ====== -->
+<div class="tab-pane" id="tab-weekly">
+  <div class="chart-wrap">
+    <div class="chart-title">&#x1F4C5; 周维度核心指标对比</div>
+    <table class="week-table">
+      <thead>
+        <tr>
+          <th>周次</th><th>周期</th><th>天数</th><th>周 QV 总量</th>
+          <th>日均 QV</th><th>最高单日</th><th>最低单日</th><th>环比增长</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><span class="wlabel" style="background:rgba(91,143,249,.15);color:#5b8ff9;border:1px solid rgba(91,143,249,.3)">W1</span></td>
+          <td style="color:#888">4/20-4/26</td><td style="color:#888">7</td>
+          <td class="num">5,204,186</td><td class="num">743,455</td>
+          <td class="num">842,100</td><td class="num">268,530</td>
+          <td class="flat">—</td>
+        </tr>
+        <tr>
+          <td><span class="wlabel" style="background:rgba(97,217,170,.15);color:#61d9aa;border:1px solid rgba(97,217,170,.3)">W2</span></td>
+          <td style="color:#888">4/27-5/3</td><td style="color:#888">7</td>
+          <td class="num">6,321,480</td><td class="num">903,069</td>
+          <td class="num">1,052,300</td><td class="num">778,400</td>
+          <td class="up">+21.5%</td>
+        </tr>
+        <tr>
+          <td><span class="wlabel" style="background:rgba(246,189,22,.15);color:#f6bd16;border:1px solid rgba(246,189,22,.3)">W3</span></td>
+          <td style="color:#888">5/4-5/9</td><td style="color:#888">6</td>
+          <td class="num">5,128,896</td><td class="num">854,816</td>
+          <td class="num">923,450</td><td class="num">801,200</td>
+          <td class="down">-5.4% (日均)</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="grid-2">
+    <div class="chart-wrap">
+      <div class="chart-title">&#x1F578; 多指标雷达对比</div>
+      <div id="radarChart" class="chart" style="height:300px"></div>
+    </div>
+    <div class="chart-wrap">
+      <div class="chart-title">&#x1F4E6; 周 QV 占比饼图</div>
+      <div id="weekPie" class="chart" style="height:300px"></div>
+    </div>
+  </div>
+
+  <div class="chart-wrap">
+    <div class="chart-title">&#x1F4CA; 各周每日 QV 分布展开</div>
+    <div id="weekDaysBar" class="chart" style="height:320px"></div>
+  </div>
+</div>
+
+<!-- ====== 每日明细 TAB ====== -->
+<div class="tab-pane" id="tab-detail">
+  <div class="chart-wrap">
+    <div class="chart-title">&#x1F4CA; 每日 QV + 周分组标注 <span class="chart-badge">背景区分周次</span></div>
+    <div id="dailyBarDetail" class="chart" style="height:360px"></div>
+  </div>
+
+  <div class="chart-wrap">
+    <div class="chart-title">&#x1F4CB; 每日 QV 明细</div>
+    <table class="week-table">
+      <thead>
+        <tr><th>日期</th><th>周次</th><th>当日 QV</th><th>日环比</th><th>战役累计</th><th>累计完成率</th></tr>
+      </thead>
+      <tbody id="dailyTableBody"></tbody>
+    </table>
+  </div>
+</div>
+
+<script>
+// =====================
+// 数据
+// =====================
+var DAILY = [
+  { date: '4/20', qv: 268530,  week: 'W1' },
+  { date: '4/21', qv: 621800,  week: 'W1' },
+  { date: '4/22', qv: 712400,  week: 'W1' },
+  { date: '4/23', qv: 768200,  week: 'W1' },
+  { date: '4/24', qv: 842100,  week: 'W1' },
+  { date: '4/25', qv: 581320,  week: 'W1' },
+  { date: '4/26', qv: 409836,  week: 'W1' },
+  { date: '4/27', qv: 778400,  week: 'W2' },
+  { date: '4/28', qv: 862100,  week: 'W2' },
+  { date: '4/29', qv: 935200,  week: 'W2' },
+  { date: '4/30', qv: 1052300, week: 'W2' },
+  { date: '5/1',  qv: 976540,  week: 'W2' },
+  { date: '5/2',  qv: 893620,  week: 'W2' },
+  { date: '5/3',  qv: 823320,  week: 'W2' },
+  { date: '5/4',  qv: 923450,  week: 'W3' },
+  { date: '5/5',  qv: 878200,  week: 'W3' },
+  { date: '5/6',  qv: 862300,  week: 'W3' },
+  { date: '5/7',  qv: 851200,  week: 'W3' },
+  { date: '5/8',  qv: 812346,  week: 'W3' },
+  { date: '5/9',  qv: 801400,  week: 'W3' },
+];
+
+var WEEK_COLORS = { W1: '#5b8ff9', W2: '#61d9aa', W3: '#f6bd16' };
+var WEEK_LABELS = { W1: 'W1 (4/20-4/26)', W2: 'W2 (4/27-5/3)', W3: 'W3 (5/4-5/9)' };
+var TARGET = 17000000;
+
+// 周聚合
+var WEEKLY = { W1: { total: 0, days: [] }, W2: { total: 0, days: [] }, W3: { total: 0, days: [] } };
+DAILY.forEach(function(d) {
+  WEEKLY[d.week].total += d.qv;
+  WEEKLY[d.week].days.push(d.qv);
+});
+
+var weekKeys = ['W1', 'W2', 'W3'];
+var weekTotals = weekKeys.map(function(w) { return WEEKLY[w].total; });
+var weekDailyAvg = weekKeys.map(function(w) {
+  return Math.round(WEEKLY[w].total / WEEKLY[w].days.length);
+});
+
+// =====================
+// Tab 切换
+// =====================
+function switchTab(id, btn) {
+  document.querySelectorAll('.tab-pane').forEach(function(el) { el.classList.remove('active'); });
+  document.querySelectorAll('.tab-btn').forEach(function(el) { el.classList.remove('active'); });
+  document.getElementById('tab-' + id).classList.add('active');
+  btn.classList.add('active');
+  setTimeout(function() { window.dispatchEvent(new Event('resize')); }, 60);
+}
+
+// =====================
+// ECharts 公共
+// =====================
+var BASE_TOOLTIP = { backgroundColor: '#1e2130', borderColor: '#2a2d3a', textStyle: { color: '#e0e0e0' } };
+var BASE_AXIS = { axisLine: { lineStyle: { color: '#2a2d3a' } }, splitLine: { lineStyle: { color: '#1e2130' } }, axisLabel: { color: '#888' } };
+
+function fmtW(v) { return (v / 10000).toFixed(1) + 'w'; }
+function fmtWx(v) { return (v / 10000).toFixed(2) + 'w'; }
+
+// =====================
+// 1. 周QV柱状图 + 日均折线
+// =====================
+var weeklyBarChart = echarts.init(document.getElementById('weeklyBar'));
+weeklyBarChart.setOption({
+  backgroundColor: 'transparent',
+  tooltip: Object.assign({ trigger: 'axis' }, BASE_TOOLTIP, {
+    formatter: function(params) {
+      var s = '<b>' + params[0].axisValue + '</b><br>';
+      params.forEach(function(p) { s += p.marker + p.seriesName + '：' + fmtWx(p.value) + '<br>'; });
+      return s;
+    }
+  }),
+  legend: { data: ['周QV总量', '日均QV'], textStyle: { color: '#888' }, top: 0 },
+  grid: { top: 40, bottom: 20, left: 60, right: 60, containLabel: true },
+  xAxis: Object.assign({ type: 'category', data: weekKeys.map(function(w) { return WEEK_LABELS[w]; }) }, BASE_AXIS),
+  yAxis: [
+    Object.assign({ type: 'value', name: '周QV', nameTextStyle: { color: '#555' }, axisLabel: { color: '#666', formatter: fmtW } }, BASE_AXIS),
+    Object.assign({ type: 'value', name: '日均', nameTextStyle: { color: '#555' }, axisLabel: { color: '#666', formatter: fmtW }, splitLine: { show: false } }, BASE_AXIS)
+  ],
+  series: [
+    {
+      name: '周QV总量', type: 'bar', yAxisIndex: 0, barWidth: '42%',
+      data: weekTotals.map(function(v, i) {
+        return { value: v, itemStyle: { color: Object.values(WEEK_COLORS)[i], borderRadius: [5, 5, 0, 0] } };
+      }),
+      label: { show: true, position: 'top', color: '#c8d0e0', fontSize: 12, formatter: function(p) { return fmtWx(p.value); } }
+    },
+    {
+      name: '日均QV', type: 'line', yAxisIndex: 1,
+      data: weekDailyAvg,
+      smooth: true, symbol: 'circle', symbolSize: 9,
+      lineStyle: { color: '#a371f7', width: 3 },
+      itemStyle: { color: '#a371f7' },
+      label: { show: true, position: 'top', color: '#a371f7', fontSize: 11, formatter: function(p) { return fmtW(p.value); } }
+    }
+  ]
+});
+
+// =====================
+// 2. 日均QV折线图
+// =====================
+var dailyAvgChart = echarts.init(document.getElementById('dailyAvgLine'));
+dailyAvgChart.setOption({
+  backgroundColor: 'transparent',
+  tooltip: Object.assign({ trigger: 'axis' }, BASE_TOOLTIP, { formatter: function(p) { return '<b>' + p[0].axisValue + '</b><br>日均QV：' + fmtWx(p[0].value); } }),
+  grid: { top: 20, bottom: 20, left: 60, right: 20, containLabel: true },
+  xAxis: Object.assign({ type: 'category', data: weekKeys.map(function(w) { return WEEK_LABELS[w]; }) }, BASE_AXIS),
+  yAxis: Object.assign({ type: 'value', axisLabel: { color: '#666', formatter: fmtW } }, BASE_AXIS),
+  series: [{
+    type: 'line', data: weekDailyAvg, smooth: true, symbol: 'circle', symbolSize: 10,
+    lineStyle: { color: '#61d9aa', width: 3 },
+    itemStyle: { color: '#61d9aa' },
+    areaStyle: { color: { type: 'linear', x: 0, y: 0, x2: 0, y2: 1, colorStops: [{ offset: 0, color: 'rgba(97,217,170,.3)' }, { offset: 1, color: 'rgba(97,217,170,.02)' }] } },
+    label: { show: true, position: 'top', color: '#61d9aa', fontSize: 12, formatter: function(p) { return fmtWx(p.value); } }
+  }]
+});
+
+// =====================
+// 3. 环比增长率
+// =====================
+var w1avg = weekDailyAvg[0], w2avg = weekDailyAvg[1], w3avg = weekDailyAvg[2];
+var growthData = [
+  +((weekTotals[1] - weekTotals[0]) / weekTotals[0] * 100).toFixed(1),
+  +((w3avg - w2avg) / w2avg * 100).toFixed(1)
+];
+var growthChart = echarts.init(document.getElementById('weeklyGrowth'));
+growthChart.setOption({
+  backgroundColor: 'transparent',
+  tooltip: Object.assign({ trigger: 'axis' }, BASE_TOOLTIP, { formatter: function(p) { return '<b>' + p[0].axisValue + '</b><br>环比：' + p[0].value + '%'; } }),
+  grid: { top: 20, bottom: 20, left: 60, right: 20, containLabel: true },
+  xAxis: Object.assign({ type: 'category', data: ['W1→W2 (总量)', 'W2→W3 (日均)'] }, BASE_AXIS),
+  yAxis: Object.assign({ type: 'value', axisLabel: { color: '#888', formatter: function(v) { return v + '%'; } } }, BASE_AXIS),
+  series: [{
+    type: 'bar', barWidth: '50%',
+    data: growthData.map(function(v) {
+      return { value: v, itemStyle: { color: v >= 0 ? '#61d9aa' : '#e86452', borderRadius: [5, 5, 0, 0] } };
+    }),
+    label: { show: true, position: function(p) { return p.value >= 0 ? 'top' : 'bottom'; }, color: '#ccc', fontSize: 13,
+      formatter: function(p) { return (p.value >= 0 ? '+' : '') + p.value + '%'; } }
+  }],
+  markLine: { silent: true, lineStyle: { color: '#333' }, data: [{ yAxis: 0 }] }
+});
+
+// =====================
+// 4. 雷达图（周对比）
+// =====================
+var radarChart = echarts.init(document.getElementById('radarChart'));
+var radarMax = { total: 7000000, dailyAvg: 1100000, peak: 1100000, stability: 100 };
+// W1 stability=低(peak-min)/avg, W2高, W3中
+var stabilityScore = function(days) {
+  var avg = days.reduce(function(a, b) { return a + b; }, 0) / days.length;
+  var cv = Math.sqrt(days.reduce(function(s, v) { return s + (v - avg) * (v - avg); }, 0) / days.length) / avg;
+  return Math.round((1 - cv) * 100);
+};
+radarChart.setOption({
+  backgroundColor: 'transparent',
+  tooltip: Object.assign({}, BASE_TOOLTIP),
+  legend: { data: ['W1', 'W2', 'W3'], textStyle: { color: '#888' }, top: 0 },
+  radar: {
+    indicator: [
+      { name: '周QV总量', max: 7000000 },
+      { name: '日均QV', max: 1100000 },
+      { name: '单日峰值', max: 1100000 },
+      { name: '稳定性', max: 100 }
+    ],
+    splitLine: { lineStyle: { color: '#2a2d3a' } },
+    splitArea: { areaStyle: { color: ['rgba(255,255,255,.02)', 'rgba(255,255,255,.01)'] } },
+    axisName: { color: '#888', fontSize: 12 },
+    axisLine: { lineStyle: { color: '#2a2d3a' } }
+  },
+  series: [{
+    type: 'radar',
+    data: weekKeys.map(function(w, i) {
+      var days = WEEKLY[w].days;
+      var total = WEEKLY[w].total;
+      var davg = Math.round(total / days.length);
+      var peak = Math.max.apply(null, days);
+      var stab = stabilityScore(days);
+      return {
+        name: w,
+        value: [total, davg, peak, stab],
+        itemStyle: { color: Object.values(WEEK_COLORS)[i] },
+        lineStyle: { color: Object.values(WEEK_COLORS)[i], width: 2 },
+        areaStyle: { color: Object.values(WEEK_COLORS)[i], opacity: 0.1 }
+      };
+    })
+  }]
+});
+
+// =====================
+// 5. 饼图（周占比）
+// =====================
+var weekPie = echarts.init(document.getElementById('weekPie'));
+weekPie.setOption({
+  backgroundColor: 'transparent',
+  tooltip: Object.assign({ trigger: 'item' }, BASE_TOOLTIP, { formatter: function(p) { return p.name + '<br>QV：' + fmtWx(p.value) + '<br>占比：' + p.percent + '%'; } }),
+  legend: { bottom: 0, textStyle: { color: '#888' } },
+  series: [{
+    type: 'pie', radius: ['42%', '68%'], center: ['50%', '46%'],
+    data: weekKeys.map(function(w) {
+      return { name: WEEK_LABELS[w], value: WEEKLY[w].total, itemStyle: { color: WEEK_COLORS[w] } };
+    }),
+    label: { color: '#c8d0e0', fontSize: 12, formatter: function(p) { return p.name + '\n' + p.percent + '%'; } },
+    emphasis: { itemStyle: { shadowBlur: 10, shadowOffsetX: 0, shadowColor: 'rgba(0,0,0,0.5)' } }
+  }]
+});
+
+// =====================
+// 6. 各周每日展开柱状图
+// =====================
+var weekDaysBar = echarts.init(document.getElementById('weekDaysBar'));
+var wdSeries = weekKeys.map(function(w) {
+  var days = WEEKLY[w].days;
+  var startIdx = DAILY.findIndex(function(d) { return d.week === w; });
+  var data = DAILY.map(function(d, i) { return d.week === w ? d.qv : null; });
+  return {
+    name: WEEK_LABELS[w], type: 'bar', barWidth: '60%', stack: null,
+    data: data.map(function(v) {
+      if (v === null) return { value: null };
+      return { value: v, itemStyle: { color: WEEK_COLORS[w], borderRadius: [3, 3, 0, 0] } };
+    }),
+    label: { show: false }
+  };
+});
+weekDaysBar.setOption({
+  backgroundColor: 'transparent',
+  tooltip: Object.assign({ trigger: 'axis' }, BASE_TOOLTIP, {
+    formatter: function(params) {
+      var p = params.filter(function(x) { return x.value !== null && x.value !== undefined; })[0];
+      if (!p) return '';
+      var d = DAILY[p.dataIndex];
+      return '<b>' + d.date + ' (' + d.week + ')</b><br>QV：' + fmtWx(d.qv);
+    }
+  }),
+  legend: { data: weekKeys.map(function(w) { return WEEK_LABELS[w]; }), textStyle: { color: '#888' }, top: 0 },
+  grid: { top: 40, bottom: 60, left: 60, right: 20, containLabel: true },
+  xAxis: Object.assign({ type: 'category', data: DAILY.map(function(d) { return d.date; }), axisLabel: { color: '#888', fontSize: 11, rotate: 30 } }, BASE_AXIS),
+  yAxis: Object.assign({ type: 'value', axisLabel: { color: '#666', formatter: fmtW } }, BASE_AXIS),
+  series: wdSeries
+});
+
+// =====================
+// 7. 每日明细柱状图（带背景区标注）
+// =====================
+var dailyBarDetail = echarts.init(document.getElementById('dailyBarDetail'));
+var cumulatives = [];
+var cum = 0;
+DAILY.forEach(function(d) { cum += d.qv; cumulatives.push(cum); });
+
+dailyBarDetail.setOption({
+  backgroundColor: 'transparent',
+  tooltip: Object.assign({ trigger: 'axis' }, BASE_TOOLTIP, {
+    formatter: function(params) {
+      var i = params[0].dataIndex;
+      var d = DAILY[i];
+      var prev = i > 0 ? DAILY[i - 1].qv : null;
+      var delta = prev ? ((d.qv - prev) / prev * 100).toFixed(1) : null;
+      var s = '<b>' + d.date + ' (' + d.week + ')</b><br>当日 QV：' + fmtWx(d.qv);
+      if (delta !== null) s += '<br>日环比：' + (delta >= 0 ? '+' : '') + delta + '%';
+      s += '<br>累计：' + fmtWx(cumulatives[i]);
+      return s;
+    }
+  }),
+  legend: { data: ['当日QV', '战役累计'], textStyle: { color: '#888' }, top: 0 },
+  grid: { top: 40, bottom: 60, left: 70, right: 60, containLabel: true },
+  xAxis: Object.assign({ type: 'category', data: DAILY.map(function(d) { return d.date; }), axisLabel: { color: '#888', fontSize: 11, rotate: 30 } }, BASE_AXIS),
+  yAxis: [
+    Object.assign({ type: 'value', name: '日QV', nameTextStyle: { color: '#555' }, axisLabel: { color: '#666', formatter: fmtW } }, BASE_AXIS),
+    Object.assign({ type: 'value', name: '累计', nameTextStyle: { color: '#555' }, axisLabel: { color: '#666', formatter: fmtW }, splitLine: { show: false } }, BASE_AXIS)
+  ],
+  series: [
+    {
+      name: '当日QV', type: 'bar', yAxisIndex: 0, barWidth: '55%',
+      data: DAILY.map(function(d) {
+        return { value: d.qv, itemStyle: { color: WEEK_COLORS[d.week], borderRadius: [3, 3, 0, 0] } };
+      })
+    },
+    {
+      name: '战役累计', type: 'line', yAxisIndex: 1,
+      data: cumulatives,
+      smooth: true, symbol: 'none',
+      lineStyle: { color: '#a371f7', width: 2.5 },
+      areaStyle: { color: { type: 'linear', x: 0, y: 0, x2: 0, y2: 1, colorStops: [{ offset: 0, color: 'rgba(163,113,247,.2)' }, { offset: 1, color: 'rgba(163,113,247,.02)' }] } }
+    }
+  ],
+  markArea: {
+    silent: true,
+    data: [
+      [{ xAxis: '4/20', itemStyle: { color: 'rgba(91,143,249,.06)' }, label: { show: true, position: 'insideTop', color: '#5b8ff9', fontSize: 11 }, name: 'W1' }, { xAxis: '4/26' }],
+      [{ xAxis: '4/27', itemStyle: { color: 'rgba(97,217,170,.06)' }, label: { show: true, position: 'insideTop', color: '#61d9aa', fontSize: 11 }, name: 'W2' }, { xAxis: '5/3' }],
+      [{ xAxis: '5/4', itemStyle: { color: 'rgba(246,189,22,.06)' }, label: { show: true, position: 'insideTop', color: '#f6bd16', fontSize: 11 }, name: 'W3' }, { xAxis: '5/9' }]
+    ]
+  }
+});
+
+// =====================
+// 8. 每日明细表格
+// =====================
+var tbody = document.getElementById('dailyTableBody');
+var cumQV = 0;
+DAILY.forEach(function(d, i) {
+  cumQV += d.qv;
+  var prev = i > 0 ? DAILY[i - 1].qv : null;
+  var delta = prev ? ((d.qv - prev) / prev * 100).toFixed(1) : null;
+  var rate = (cumQV / TARGET * 100).toFixed(1);
+  var wColor = WEEK_COLORS[d.week];
+  var wBg = d.week === 'W1' ? 'rgba(91,143,249,.15)' : d.week === 'W2' ? 'rgba(97,217,170,.15)' : 'rgba(246,189,22,.15)';
+  var wBorder = d.week === 'W1' ? 'rgba(91,143,249,.3)' : d.week === 'W2' ? 'rgba(97,217,170,.3)' : 'rgba(246,189,22,.3)';
+
+  var deltaHtml = delta === null ? '<span style="color:#555">—</span>'
+    : delta >= 0
+      ? '<span style="color:#61d9aa">+' + delta + '%</span>'
+      : '<span style="color:#e86452">' + delta + '%</span>';
+
+  var tr = document.createElement('tr');
+  tr.innerHTML = '<td style="color:#c8d0e0">' + d.date + '</td>'
+    + '<td><span class="wlabel" style="background:' + wBg + ';color:' + wColor + ';border:1px solid ' + wBorder + '">' + d.week + '</span></td>'
+    + '<td class="num">' + d.qv.toLocaleString() + '</td>'
+    + '<td>' + deltaHtml + '</td>'
+    + '<td class="num">' + cumQV.toLocaleString() + '</td>'
+    + '<td style="color:' + (parseFloat(rate) >= 100 ? '#61d9aa' : '#f6bd16') + '">' + rate + '%</td>';
+  tbody.appendChild(tr);
+});
+
+// =====================
+// resize
+// =====================
+var ALL_CHARTS = [weeklyBarChart, dailyAvgChart, growthChart, radarChart, weekPie, weekDaysBar, dailyBarDetail];
+window.addEventListener('resize', function() {
+  ALL_CHARTS.forEach(function(c) { try { c.resize(); } catch(e) {} });
+});
+</script>
+</body>
+</html>
